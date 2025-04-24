@@ -126,16 +126,150 @@ except ImportError:
                     logger.info(f"Generated response: {str(response)[:200]}...")
                     return response
 
-# Try to import LLM completion function
+# Import required modules
+import requests
+import aiohttp
+import os
+
+# Define a robust Core API client for LLM and memory interactions
+class CoreLLMClient:
+    def __init__(self, core_api_url=None):
+        self.core_api_url = core_api_url or os.environ.get("CORE_API_URL", "http://host.docker.internal:8888")
+        logger.info(f"Initialized CoreLLMClient with API URL: {self.core_api_url}")
+        
+    def get_completion(self, prompt, model="gpt-4", temperature=0.7, system_prompt=None):
+        """
+        Get a completion from the LLM via the core API
+        """
+        try:
+            # Prepare messages based on whether system_prompt is provided
+            if system_prompt:
+                messages = [
+                    {"role": "system", "content": system_prompt},
+                    {"role": "user", "content": prompt}
+                ]
+            else:
+                messages = [{"role": "user", "content": prompt}]
+                
+            # Make the API call
+            response = requests.post(
+                f"{self.core_api_url}/api/llm/generate",
+                json={
+                    "messages": messages,
+                    "model": model,
+                    "temperature": temperature
+                }
+            )
+            
+            if response.status_code == 200:
+                result = response.json()
+                return result.get("text", "")
+            else:
+                logger.error(f"API Error ({response.status_code}): {response.text}")
+                return f"Error getting completion: {response.status_code}"
+        except Exception as e:
+            logger.error(f"Error in get_completion: {str(e)}")
+            return f"This is a fallback response due to an error: {str(e)}"
+            
+    async def get_completion_async(self, prompt, model="gpt-4", temperature=0.7, system_prompt=None, max_tokens=None):
+        """
+        Get a completion from the LLM via the core API (async version)
+        """
+        try:
+            # Prepare messages based on whether system_prompt is provided
+            if system_prompt:
+                messages = [
+                    {"role": "system", "content": system_prompt},
+                    {"role": "user", "content": prompt}
+                ]
+            else:
+                messages = [{"role": "user", "content": prompt}]
+                
+            # Prepare request payload
+            payload = {
+                "messages": messages,
+                "model": model,
+                "temperature": temperature
+            }
+            
+            # Add max_tokens if provided
+            if max_tokens:
+                payload["max_tokens"] = max_tokens
+                
+            async with aiohttp.ClientSession() as session:
+                async with session.post(
+                    f"{self.core_api_url}/api/llm/generate",
+                    json=payload
+                ) as response:
+                    if response.status == 200:
+                        result = await response.json()
+                        return result.get("text", "")
+                    else:
+                        error_text = await response.text()
+                        logger.error(f"API Error ({response.status}): {error_text}")
+                        return f"Error getting completion: {response.status}"
+        except Exception as e:
+            logger.error(f"Error in get_completion_async: {str(e)}")
+            return f"This is a fallback async response due to an error: {str(e)}"
+    
+    def search_memory(self, query, limit=5, threshold=0.65):
+        """
+        Search for relevant context in the memory system
+        """
+        try:
+            # Make the API call
+            response = requests.post(
+                f"{self.core_api_url}/api/memory/search",
+                json={
+                    "query": query,
+                    "limit": limit,
+                    "threshold": threshold
+                }
+            )
+            
+            if response.status_code == 200:
+                return response.json()
+            else:
+                logger.error(f"Memory API Error ({response.status_code}): {response.text}")
+                return []
+        except Exception as e:
+            logger.error(f"Error in search_memory: {str(e)}")
+            return []
+    
+    async def process_message(self, message_id, agent_id, result):
+        """
+        Post processing results back to the core system
+        """
+        try:
+            async with aiohttp.ClientSession() as session:
+                async with session.post(
+                    f"{self.core_api_url}/api/messages/{message_id}/process",
+                    json={
+                        "agent_id": agent_id,
+                        "result": result
+                    }
+                ) as response:
+                    if response.status == 200:
+                        return True
+                    else:
+                        error_text = await response.text()
+                        logger.error(f"Process API Error ({response.status}): {error_text}")
+                        return False
+        except Exception as e:
+            logger.error(f"Error in process_message: {str(e)}")
+            return False
+
+# Create a global client instance
 try:
-    from semsubscription.llm.completion import get_completion, get_completion_async
-except ImportError:
-    # Define fallback functions if not available
-    def get_completion(prompt, model="gpt-4", temperature=0.7):
+    core_llm_client = CoreLLMClient()
+except Exception as e:
+    logger.error(f"Failed to initialize CoreLLMClient: {str(e)}")
+    # Define fallback functions to prevent further errors
+    def get_completion(prompt, model="gpt-4", temperature=0.7, system_prompt=None):
         logger.warning("Using fallback LLM completion function - no actual LLM calls will be made")
         return f"This is a fallback response. In production, this would be answered using an LLM with prompt: {prompt[:50]}..."
         
-    async def get_completion_async(prompt, model="gpt-4", temperature=0.7):
+    async def get_completion_async(prompt, model="gpt-4", temperature=0.7, system_prompt=None):
         logger.warning("Using fallback async LLM completion function - no actual LLM calls will be made")
         return f"This is a fallback async response. In production, this would be answered using an LLM with prompt: {prompt[:50]}..."
 
@@ -337,14 +471,28 @@ class Test_agent14(BaseAgent):
                 
             logger.info(f"Processing question asynchronously: {content[:100]}...")
             
-            # Retrieve relevant context if memory system is available
+            # Retrieve relevant context using CoreLLMClient
             context_items = []
-            if hasattr(self, 'memory_system') and self.memory_system:
-                logger.info(f"Retrieving context for question")
-                context_items = await asyncio.to_thread(
-                    self._retrieve_relevant_context, content
-                )
+            try:
+                if hasattr(self, 'memory_system') and self.memory_system:
+                    # Try using the memory system first
+                    logger.info(f"Retrieving context from memory system")
+                    context_items = await asyncio.to_thread(
+                        self._retrieve_relevant_context, content
+                    )
+                else:
+                    # Fall back to the CoreLLMClient for memory search
+                    logger.info(f"Retrieving context from CoreLLMClient")
+                    context_items = await asyncio.to_thread(
+                        core_llm_client.search_memory,
+                        query=content,
+                        limit=5,
+                        threshold=0.65
+                    )
+                
                 logger.info(f"Retrieved {len(context_items)} context items")
+            except Exception as ctx_error:
+                logger.error(f"Error retrieving context: {str(ctx_error)}")
             
             # Enhance the system prompt with context
             system_prompt = self._get_enhanced_system_prompt(context_items)
@@ -352,19 +500,40 @@ class Test_agent14(BaseAgent):
             # Set up the prompt for the LLM
             user_prompt = f"Question: {content}\n\nPlease provide a helpful answer."
             
-            # Get completion from LLM
+            # Get completion from LLM using CoreLLMClient
             try:
-                answer = await get_completion_async(
+                # Try with the CoreLLMClient first
+                answer = await core_llm_client.get_completion_async(
                     prompt=user_prompt,
                     system_prompt=system_prompt,
-                    model=self.llm_model,
-                    temperature=self.llm_temperature,
-                    max_tokens=self.llm_max_tokens
+                    model=self.llm_model if hasattr(self, 'llm_model') else "gpt-4",
+                    temperature=self.llm_temperature if hasattr(self, 'llm_temperature') else 0.7,
+                    max_tokens=self.llm_max_tokens if hasattr(self, 'llm_max_tokens') else 1000
                 )
                 
                 logger.info(f"LLM generated answer: {answer[:100]}...")
                 
-                # Create response to return
+                # Prepare result for API posting
+                result = {
+                    "answer": answer,
+                    "confidence": 0.95,
+                    "model_used": self.llm_model if hasattr(self, 'llm_model') else "gpt-4",
+                    "context_used": len(context_items) > 0
+                }
+                
+                # Post the response back to the event bus using CoreLLMClient
+                success = await core_llm_client.process_message(
+                    message_id=message_id,
+                    agent_id=self.agent_id,
+                    result=result
+                )
+                
+                if success:
+                    logger.info(f"Successfully posted response to event bus for message {message_id}")
+                else:
+                    logger.error(f"Failed to post response to event bus for message {message_id}")
+                    
+                # Create response data for internal use
                 response_data = {
                     "agent": self.name,
                     "message_id": message_id,
@@ -374,90 +543,11 @@ class Test_agent14(BaseAgent):
                     "context_used": len(context_items) > 0
                 }
                 
-                # Post the response back to the event bus if we have access to API
-                try:
-                    # Import here to avoid circular imports
-                    try: 
-                        import requests
-                        from semsubscription.config import get_config
-                        
-                        # Try to get core API URL from config
-                        config = get_config()
-                        core_api_url = config.get('core_api_url', 'http://localhost:8000')
-                        
-                        # Send the response to the API
-                        process_url = f"{core_api_url}/api/messages/{message_id}/process"
-                        logger.info(f"Posting response to {process_url}")
-                        
-                        process_response = requests.post(
-                            process_url,
-                            json={
-                                "agent_id": self.agent_id,
-                                "result": {
-                                    "answer": answer,
-                                    "confidence": 0.95,
-                                    "model_used": self.llm_model if hasattr(self, 'llm_model') else "gpt-4",
-                                    "context_used": len(context_items) > 0
-                                }
-                            }
-                        )
-                        
-                        if process_response.status_code == 200:
-                            logger.info(f"Successfully posted response to event bus for message {message_id}")
-                        else:
-                            logger.error(f"Error posting to API: {process_response.status_code} - {process_response.text}")
-                    except ImportError:
-                        logger.warning("Could not import required modules for API posting")
-                    except Exception as api_error:
-                        logger.error(f"Error posting to API: {str(api_error)}")
-                except Exception as e:
-                    logger.error(f"Failed to post to event bus: {str(e)}")
-                    
-                # Return the response data
                 return response_data
             except Exception as e:
                 logger.error(f"Error getting LLM completion: {e}")
                 # Fall back to synchronous version
                 result = self.process_message(message)
-                
-                # Post to event bus
-                try:
-                    # Import here to avoid circular imports
-                    try: 
-                        import requests
-                        from semsubscription.config import get_config
-                        
-                        # Try to get core API URL from config
-                        config = get_config()
-                        core_api_url = config.get('core_api_url', 'http://localhost:8000')
-                        
-                        # Send the response to the API
-                        process_url = f"{core_api_url}/api/messages/{message_id}/process"
-                        logger.info(f"Posting response to {process_url}")
-                        
-                        process_response = requests.post(
-                            process_url,
-                            json={
-                                "agent_id": self.agent_id,
-                                "result": {
-                                    "answer": result.get("answer", "No answer available"),
-                                    "confidence": 0.8,
-                                    "model_used": "fallback"
-                                }
-                            }
-                        )
-                        
-                        if process_response.status_code == 200:
-                            logger.info(f"Successfully posted fallback response to event bus for message {message_id}")
-                        else:
-                            logger.error(f"Error posting fallback to API: {process_response.status_code} - {process_response.text}")
-                    except ImportError:
-                        logger.warning("Could not import required modules for API posting")
-                    except Exception as api_error:
-                        logger.error(f"Error posting fallback to API: {str(api_error)}")
-                except Exception as e:
-                    logger.error(f"Failed to post fallback to event bus: {str(e)}")
-                
                 return result
                 
         except Exception as e:
@@ -491,109 +581,97 @@ class Test_agent14(BaseAgent):
                 
             logger.info(f"Processing message {message_id}: {content[:100]}...")
             
-            # Use synchronous LLM completion as fallback
+            # Use CoreLLMClient to get completion and post results
             try:
                 # Simple version of the prompt without context
                 system_prompt = self.system_prompt if hasattr(self, 'system_prompt') else "You are a helpful assistant."
                 user_prompt = f"Question: {content}\n\nPlease provide a helpful answer."
                 
-                # Check the get_completion function signature - it might not support system_prompt
-                try:
-                    # Try with system_prompt parameter
-                    answer = get_completion(
-                        prompt=user_prompt,
-                        system_prompt=system_prompt,
-                        model=self.llm_model if hasattr(self, 'llm_model') else "gpt-4",
-                        temperature=self.llm_temperature if hasattr(self, 'llm_temperature') else 0.7
-                    )
-                except TypeError as te:
-                    if 'system_prompt' in str(te):
-                        # Fall back to just using the prompt without separate system_prompt
-                        combined_prompt = f"{system_prompt}\n\n{user_prompt}"
-                        logger.info("Using combined prompt without system_prompt parameter")
-                        answer = get_completion(
-                            prompt=combined_prompt,
-                            model=self.llm_model if hasattr(self, 'llm_model') else "gpt-4",
-                            temperature=self.llm_temperature if hasattr(self, 'llm_temperature') else 0.7
-                        )
-                    else:
-                        # Some other TypeError
-                        raise
+                # Use the CoreLLMClient to get a completion
+                answer = core_llm_client.get_completion(
+                    prompt=user_prompt,
+                    system_prompt=system_prompt,
+                    model=self.llm_model if hasattr(self, 'llm_model') else "gpt-4",
+                    temperature=self.llm_temperature if hasattr(self, 'llm_temperature') else 0.7
+                )
                 
-                response_data = {
+                # Prepare API result
+                result = {
+                    "answer": answer,
+                    "confidence": 0.95,
+                    "model_used": self.llm_model if hasattr(self, 'llm_model') else "gpt-4"
+                }
+                
+                # Use requests directly since we're in sync context
+                try:
+                    process_url = f"{core_llm_client.core_api_url}/api/messages/{message_id}/process"
+                    logger.info(f"Posting response to {process_url}")
+                    
+                    process_response = requests.post(
+                        process_url,
+                        json={
+                            "agent_id": self.agent_id,
+                            "result": result
+                        }
+                    )
+                    
+                    if process_response.status_code == 200:
+                        logger.info(f"Successfully posted response to event bus for message {message_id}")
+                    else:
+                        logger.error(f"Error posting to API: {process_response.status_code} - {process_response.text}")
+                except Exception as api_error:
+                    logger.error(f"Error posting to API: {str(api_error)}")
+                
+                # Return the response data for internal use
+                return {
                     "agent": self.name,
                     "message_id": message_id,
                     "question": content,
                     "answer": answer,
                     "timestamp": time.time()
                 }
-                
-                # Post the response back to the event bus if we have access to API
-                try:
-                    # Import here to avoid circular imports
-                    try: 
-                        import requests
-                        from semsubscription.config import get_config
-                        
-                        # Try to get core API URL from config
-                        config = get_config()
-                        core_api_url = config.get('core_api_url', 'http://localhost:8000')
-                        
-                        # Send the response to the API
-                        process_url = f"{core_api_url}/api/messages/{message_id}/process"
-                        logger.info(f"Posting response to {process_url}")
-                        
-                        process_response = requests.post(
-                            process_url,
-                            json={
-                                "agent_id": self.agent_id,
-                                "result": {
-                                    "answer": answer,
-                                    "confidence": 0.95,
-                                    "model_used": self.llm_model if hasattr(self, 'llm_model') else "gpt-4"
-                                }
-                            }
-                        )
-                        
-                        if process_response.status_code == 200:
-                            logger.info(f"Successfully posted response to event bus for message {message_id}")
-                        else:
-                            logger.error(f"Error posting to API: {process_response.status_code} - {process_response.text}")
-                    except ImportError:
-                        logger.warning("Could not import required modules for API posting")
-                    except Exception as api_error:
-                        logger.error(f"Error posting to API: {str(api_error)}")
-                except Exception as e:
-                    logger.error(f"Failed to post to event bus: {str(e)}")
-                    
-                # Return the response data
-                return response_data
             except Exception as e:
                 logger.error(f"Error in LLM completion: {e}")
                 # Fallback pattern matching for basic responses
+                answer = None
                 if 'help' in query or 'hello' in query:
-                    return {
-                        "agent": self.name,
-                        "message_id": message_id,
-                        "question": content,
-                        "answer": f"Hello! I'm {self.name}, an agent that {self.description.lower()}. Without my LLM connection, I can only provide limited responses, but I'd be happy to try to help you with your questions.",
-                        "timestamp": time.time()
-                    }
+                    answer = f"Hello! I'm {self.name}, an agent that {self.description.lower()}. Without my LLM connection, I can only provide limited responses, but I'd be happy to try to help you with your questions."
                 elif 'what' in query and 'you' in query and 'do' in query:
-                    return {
-                        "agent": self.name,
-                        "message_id": message_id,
-                        "question": content,
-                        "answer": f"I am a question answering agent. I detect questions in messages and provide helpful answers using an LLM. I'm designed to identify questions based on both language patterns and semantic meaning.",
-                        "timestamp": time.time()
-                    }
-            
-                # Default response if no pattern matches and LLM is unavailable
+                    answer = f"I am a question answering agent. I detect questions in messages and provide helpful answers using an LLM. I'm designed to identify questions based on both language patterns and semantic meaning."
+                else:
+                    # Default response if no pattern matches and LLM is unavailable
+                    answer = f"I understand you're asking a question, but I'm currently operating without my LLM capabilities. In production, I would provide a detailed answer to your question using an advanced language model."
+                
+                # Try to post the fallback answer to the event bus
+                try:
+                    process_url = f"{core_llm_client.core_api_url}/api/messages/{message_id}/process"
+                    logger.info(f"Posting fallback response to {process_url}")
+                    
+                    process_response = requests.post(
+                        process_url,
+                        json={
+                            "agent_id": self.agent_id,
+                            "result": {
+                                "answer": answer,
+                                "confidence": 0.8,
+                                "model_used": "fallback"
+                            }
+                        }
+                    )
+                    
+                    if process_response.status_code == 200:
+                        logger.info(f"Successfully posted fallback response to event bus for message {message_id}")
+                    else:
+                        logger.error(f"Error posting fallback to API: {process_response.status_code} - {process_response.text}")
+                except Exception as api_error:
+                    logger.error(f"Error posting fallback to API: {str(api_error)}")
+                    
+                # Return the response data
                 return {
                     "agent": self.name,
                     "message_id": message_id,
                     "question": content,
-                    "answer": f"I understand you're asking a question, but I'm currently operating without my LLM capabilities. In production, I would provide a detailed answer to your question using an advanced language model.",
+                    "answer": answer,
                     "timestamp": time.time()
                 }
             
