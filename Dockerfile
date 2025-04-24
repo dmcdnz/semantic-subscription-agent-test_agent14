@@ -25,25 +25,24 @@ RUN mkdir -p ./fine_tuned_model/
 # Create necessary directories for the fine-tuned model
 RUN mkdir -p ./fine_tuned_model/1_Pooling/
 
-# Option 1: Try to copy all model files at once (might lead to Docker build warnings if files don't exist)
-# Create directory for fine-tuned model (will be populated during build)
-RUN mkdir -p ./fine_tuned_model/
+# IMPORTANT: Docker doesn't support shell-style error handling with || in COPY commands
+# Just use standard COPY commands and accept that some might produce warnings
 
-# Add a README in the fine_tuned_model directory with instructions
-RUN echo "# Fine-tuned Model Directory\n\nPlace your fine-tuned sentence transformer model files here to improve agent interest detection.\nThe agent will automatically use this model when present." > ./fine_tuned_model/README.md || echo "Copying fine_tuned_model directory"
+# Copy the entire model directory if it exists
+COPY fine_tuned_model/ ./fine_tuned_model/
 
-# Option 2: Copy critical files individually (more reliable)
-# Note: We ignore errors with || true to avoid build failures
-COPY fine_tuned_model/classification_head.pt ./fine_tuned_model/ || true
-COPY fine_tuned_model/model.safetensors ./fine_tuned_model/ || true
-COPY fine_tuned_model/*.json ./fine_tuned_model/ || true
-COPY fine_tuned_model/*.txt ./fine_tuned_model/ || true
+# Optional: Also try to copy specific files individually
+# These may produce warnings but won't fail the build if files don't exist
+# because we're copying the directory above and these are just for redundancy
+# COPY fine_tuned_model/classification_head.pt ./fine_tuned_model/
+# COPY fine_tuned_model/model.safetensors ./fine_tuned_model/
 
 # Make sure we have a proper README for debugging
 RUN echo "This directory should contain classification_head.pt and other model files" > ./fine_tuned_model/README.md
 
-# Copy pooling directory files if they exist
-COPY fine_tuned_model/1_Pooling/* ./fine_tuned_model/1_Pooling/ || true
+# Copy pooling directory files if the directory exists
+# This might produce a warning if the directory doesn't exist, but won't fail the build
+COPY fine_tuned_model/1_Pooling/ ./fine_tuned_model/1_Pooling/
 
 # Environment variables
 ENV AGENT_ID="${AGENT_ID}"
