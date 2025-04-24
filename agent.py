@@ -364,8 +364,8 @@ class Test_agent14(BaseAgent):
                 
                 logger.info(f"LLM generated answer: {answer[:100]}...")
                 
-                # Return the response with the answer
-                return {
+                # Create response to return
+                response_data = {
                     "agent": self.name,
                     "message_id": message_id,
                     "question": content,
@@ -373,10 +373,92 @@ class Test_agent14(BaseAgent):
                     "timestamp": time.time(),
                     "context_used": len(context_items) > 0
                 }
+                
+                # Post the response back to the event bus if we have access to API
+                try:
+                    # Import here to avoid circular imports
+                    try: 
+                        import requests
+                        from semsubscription.config import get_config
+                        
+                        # Try to get core API URL from config
+                        config = get_config()
+                        core_api_url = config.get('core_api_url', 'http://localhost:8000')
+                        
+                        # Send the response to the API
+                        process_url = f"{core_api_url}/api/messages/{message_id}/process"
+                        logger.info(f"Posting response to {process_url}")
+                        
+                        process_response = requests.post(
+                            process_url,
+                            json={
+                                "agent_id": self.agent_id,
+                                "result": {
+                                    "answer": answer,
+                                    "confidence": 0.95,
+                                    "model_used": self.llm_model if hasattr(self, 'llm_model') else "gpt-4",
+                                    "context_used": len(context_items) > 0
+                                }
+                            }
+                        )
+                        
+                        if process_response.status_code == 200:
+                            logger.info(f"Successfully posted response to event bus for message {message_id}")
+                        else:
+                            logger.error(f"Error posting to API: {process_response.status_code} - {process_response.text}")
+                    except ImportError:
+                        logger.warning("Could not import required modules for API posting")
+                    except Exception as api_error:
+                        logger.error(f"Error posting to API: {str(api_error)}")
+                except Exception as e:
+                    logger.error(f"Failed to post to event bus: {str(e)}")
+                    
+                # Return the response data
+                return response_data
             except Exception as e:
                 logger.error(f"Error getting LLM completion: {e}")
                 # Fall back to synchronous version
-                return self.process_message(message)
+                result = self.process_message(message)
+                
+                # Post to event bus
+                try:
+                    # Import here to avoid circular imports
+                    try: 
+                        import requests
+                        from semsubscription.config import get_config
+                        
+                        # Try to get core API URL from config
+                        config = get_config()
+                        core_api_url = config.get('core_api_url', 'http://localhost:8000')
+                        
+                        # Send the response to the API
+                        process_url = f"{core_api_url}/api/messages/{message_id}/process"
+                        logger.info(f"Posting response to {process_url}")
+                        
+                        process_response = requests.post(
+                            process_url,
+                            json={
+                                "agent_id": self.agent_id,
+                                "result": {
+                                    "answer": result.get("answer", "No answer available"),
+                                    "confidence": 0.8,
+                                    "model_used": "fallback"
+                                }
+                            }
+                        )
+                        
+                        if process_response.status_code == 200:
+                            logger.info(f"Successfully posted fallback response to event bus for message {message_id}")
+                        else:
+                            logger.error(f"Error posting fallback to API: {process_response.status_code} - {process_response.text}")
+                    except ImportError:
+                        logger.warning("Could not import required modules for API posting")
+                    except Exception as api_error:
+                        logger.error(f"Error posting fallback to API: {str(api_error)}")
+                except Exception as e:
+                    logger.error(f"Failed to post fallback to event bus: {str(e)}")
+                
+                return result
                 
         except Exception as e:
             logger.error(f"Error in async message processing: {e}")
@@ -415,20 +497,77 @@ class Test_agent14(BaseAgent):
                 system_prompt = self.system_prompt if hasattr(self, 'system_prompt') else "You are a helpful assistant."
                 user_prompt = f"Question: {content}\n\nPlease provide a helpful answer."
                 
-                answer = get_completion(
-                    prompt=user_prompt,
-                    system_prompt=system_prompt,
-                    model=self.llm_model if hasattr(self, 'llm_model') else "gpt-4",
-                    temperature=self.llm_temperature if hasattr(self, 'llm_temperature') else 0.7
-                )
+                # Check the get_completion function signature - it might not support system_prompt
+                try:
+                    # Try with system_prompt parameter
+                    answer = get_completion(
+                        prompt=user_prompt,
+                        system_prompt=system_prompt,
+                        model=self.llm_model if hasattr(self, 'llm_model') else "gpt-4",
+                        temperature=self.llm_temperature if hasattr(self, 'llm_temperature') else 0.7
+                    )
+                except TypeError as te:
+                    if 'system_prompt' in str(te):
+                        # Fall back to just using the prompt without separate system_prompt
+                        combined_prompt = f"{system_prompt}\n\n{user_prompt}"
+                        logger.info("Using combined prompt without system_prompt parameter")
+                        answer = get_completion(
+                            prompt=combined_prompt,
+                            model=self.llm_model if hasattr(self, 'llm_model') else "gpt-4",
+                            temperature=self.llm_temperature if hasattr(self, 'llm_temperature') else 0.7
+                        )
+                    else:
+                        # Some other TypeError
+                        raise
                 
-                return {
+                response_data = {
                     "agent": self.name,
                     "message_id": message_id,
                     "question": content,
                     "answer": answer,
                     "timestamp": time.time()
                 }
+                
+                # Post the response back to the event bus if we have access to API
+                try:
+                    # Import here to avoid circular imports
+                    try: 
+                        import requests
+                        from semsubscription.config import get_config
+                        
+                        # Try to get core API URL from config
+                        config = get_config()
+                        core_api_url = config.get('core_api_url', 'http://localhost:8000')
+                        
+                        # Send the response to the API
+                        process_url = f"{core_api_url}/api/messages/{message_id}/process"
+                        logger.info(f"Posting response to {process_url}")
+                        
+                        process_response = requests.post(
+                            process_url,
+                            json={
+                                "agent_id": self.agent_id,
+                                "result": {
+                                    "answer": answer,
+                                    "confidence": 0.95,
+                                    "model_used": self.llm_model if hasattr(self, 'llm_model') else "gpt-4"
+                                }
+                            }
+                        )
+                        
+                        if process_response.status_code == 200:
+                            logger.info(f"Successfully posted response to event bus for message {message_id}")
+                        else:
+                            logger.error(f"Error posting to API: {process_response.status_code} - {process_response.text}")
+                    except ImportError:
+                        logger.warning("Could not import required modules for API posting")
+                    except Exception as api_error:
+                        logger.error(f"Error posting to API: {str(api_error)}")
+                except Exception as e:
+                    logger.error(f"Failed to post to event bus: {str(e)}")
+                    
+                # Return the response data
+                return response_data
             except Exception as e:
                 logger.error(f"Error in LLM completion: {e}")
                 # Fallback pattern matching for basic responses
