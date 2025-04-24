@@ -553,21 +553,103 @@ class Test_agent14(BaseAgent):
                     }
                 }
                 
-                # Get the API URL, defaulting to the host-accessible Docker address
-                core_api_url = os.environ.get("CORE_API_URL", "http://host.docker.internal:8888")
+                # Determine the API endpoint base URL
+                # Try several common patterns for containerized environments
+                core_api_url = os.environ.get("CORE_API_URL", None)
                 
-                # Post the response to the message
-                api_response = requests.post(
-                    f"{core_api_url}/api/messages/{message_id}/responses",
-                    json=response_data,
-                    timeout=5  # Add timeout to prevent hanging
-                )
+                # If no explicit URL is provided, we'll try several common patterns
+                if not core_api_url:
+                    # List of potential base URLs to try, in order of priority
+                    potential_base_urls = [
+                        # Docker internal service name (most common in containerized environments)
+                        "http://api:8888",
+                        # Core service name
+                        "http://core-api:8888",
+                        # Application name
+                        "http://semsubscription-api:8888",
+                        # Host machine from container (Windows/Mac)
+                        "http://host.docker.internal:8888",
+                        # Host machine from container (Linux)
+                        "http://172.17.0.1:8888",
+                        # Localhost (for non-containerized testing)
+                        "http://localhost:8888"
+                    ]
+                    
+                    # Log that we're using auto-detection
+                    logger.info(f"No CORE_API_URL environment variable found, will try common containerized patterns")
+                    
+                    # We'll try these URLs later in the request logic
+                    core_api_url = potential_base_urls[0]  # Start with the first one
                 
-                if api_response.status_code in [200, 201]:
+                # Try different URLs and endpoint formats until one works
+                response_created = False
+                last_error = None
+                last_status_code = None
+                
+                # Get potential base URLs if we're auto-detecting
+                potential_urls = [core_api_url]  # Start with the configured or default URL
+                if os.environ.get("CORE_API_URL", None) is None:
+                    # If we're auto-detecting, use our list of potential URLs
+                    potential_urls = [
+                        "http://api:8888",
+                        "http://core-api:8888",
+                        "http://semsubscription-api:8888",
+                        "http://host.docker.internal:8888",
+                        "http://172.17.0.1:8888",
+                        "http://localhost:8888"
+                    ]
+                
+                # Define endpoint patterns to try
+                endpoint_patterns = [
+                    "/api/messages/{message_id}/responses",  # With /api prefix
+                    "/messages/{message_id}/responses"      # Without /api prefix
+                ]
+                
+                # Try each combination of base URL and endpoint pattern
+                for base_url in potential_urls:
+                    for endpoint_pattern in endpoint_patterns:
+                        try:
+                            # Construct the full URL
+                            full_url = f"{base_url}{endpoint_pattern}".format(message_id=message_id)
+                            
+                            logger.info(f"Attempting to create response using URL: {full_url}")
+                            
+                            # Make the request
+                            api_response = requests.post(
+                                full_url,
+                                json=response_data,
+                                timeout=3  # Shorter timeout since we're trying multiple endpoints
+                            )
+                            
+                            # Store the result
+                            last_status_code = api_response.status_code
+                            
+                            # If successful, break out of both loops
+                            if api_response.status_code in [200, 201]:
+                                logger.info(f"Successfully created response with URL: {full_url}")
+                                response_created = True
+                                break  # Exit the endpoint pattern loop
+                        except Exception as e:
+                            last_error = str(e)
+                            continue  # Try the next endpoint pattern
+                    
+                    # If we successfully created a response, break out of the base URL loop too
+                    if response_created:
+                        break
+                
+                # If we couldn't create a response, log the details
+                if not response_created:
+                    if last_status_code:
+                        logger.info(f"Failed to create response message: tried all URL patterns, last status code: {last_status_code}")
+                    elif last_error:
+                        logger.info(f"Failed to create response message: tried all URL patterns, last error: {last_error}")
+                    else:
+                        logger.info("Failed to create response message: tried all URL patterns, no response received")
+                
+                if response_created:
                     # Get the created response message
                     response_message = api_response.json()
                     response_id = response_message.get('id', 'unknown')
-                    logger.info(f"Successfully created response message with ID: {response_id}")
                     
                     # Return the response information
                     return {
@@ -579,7 +661,6 @@ class Test_agent14(BaseAgent):
                         "response_created": True
                     }
                 else:
-                    logger.info(f"Failed to create response message: {api_response.status_code}")
                     # Fall back to returning the response directly
                     return {
                         "agent": self.name,
