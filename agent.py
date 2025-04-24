@@ -250,6 +250,7 @@ class Test_agent14(BaseAgent):
     def get_relevant_memories(self, query, limit=3):
         """
         Retrieve relevant memories for context based on the query
+        Memory operations are optional - agent functions without memory
         
         Args:
             query: The query to search memories for
@@ -258,6 +259,13 @@ class Test_agent14(BaseAgent):
         Returns:
             List of relevant memories or empty list if no matches or error occurs
         """
+        # Skip memory operations if not needed - just basic safety check
+        if not query or not isinstance(query, str) or len(query.strip()) < 3:
+            return []
+            
+        # Keep track if we've logged memory errors already to avoid log spam
+        memory_error_logged = False
+            
         try:
             # Try to use direct memory API if available
             try:
@@ -267,9 +275,16 @@ class Test_agent14(BaseAgent):
                     min_similarity=0.7
                 )
                 return memories
-            except NameError:
-                # Fallback to API endpoint for containerized environments
+            except (NameError, AttributeError):
+                # Fall back to API endpoint for containerized environments
                 try:
+                    # Only proceed if requests is available
+                    if 'requests' not in globals() and 'requests' not in locals():
+                        if not memory_error_logged:
+                            logger.info("Memory search skipped: requests module not available")
+                            memory_error_logged = True
+                        return []
+                        
                     core_api_url = os.environ.get("CORE_API_URL", "http://host.docker.internal:8888")
                     
                     response = requests.post(
@@ -278,24 +293,32 @@ class Test_agent14(BaseAgent):
                             "query": query,
                             "limit": limit,
                             "min_similarity": 0.7
-                        }
+                        },
+                        timeout=3  # Add timeout to prevent hanging
                     )
                     
                     if response.status_code == 200:
                         return response.json()
                     else:
-                        logger.warning(f"Memory search failed with status code: {response.status_code}")
+                        if not memory_error_logged:
+                            logger.info(f"Memory search returned status code: {response.status_code}")
+                            memory_error_logged = True
                 except Exception as e:
-                    logger.warning(f"Error retrieving memories via API: {e}")
-            
-            return []
+                    if not memory_error_logged:
+                        logger.info(f"Memory search unavailable: {str(e)}")
+                        memory_error_logged = True
         except Exception as e:
-            logger.warning(f"Error retrieving memories: {e}")
-            return []
+            if not memory_error_logged:
+                logger.info(f"Memory operations skipped: {str(e)}")
+                memory_error_logged = True
+                
+        # Always continue with the agent's processing
+        return []
     
     def store_memory(self, content, tags=[]):
         """
         Store important information as a memory
+        Memory operations are optional - agent functions without memory
         
         Args:
             content: The content to store
@@ -304,6 +327,10 @@ class Test_agent14(BaseAgent):
         Returns:
             Boolean indicating success
         """
+        # Skip memory operations if not needed
+        if not content or not isinstance(content, str) or len(content.strip()) < 10:
+            return False
+            
         try:
             # Try to use direct memory API if available
             try:
@@ -315,8 +342,14 @@ class Test_agent14(BaseAgent):
                     },
                     tags=tags
                 )
+                logger.info(f"Successfully stored memory with tags: {tags}")
                 return True
-            except NameError:
+            except (NameError, AttributeError):
+                # Don't try API call if requests isn't available
+                if 'requests' not in globals() and 'requests' not in locals():
+                    logger.info("Memory storage skipped: requests module not available")
+                    return False
+                    
                 # Fallback to API endpoint for containerized environments
                 try:
                     core_api_url = os.environ.get("CORE_API_URL", "http://host.docker.internal:8888")
@@ -330,20 +363,24 @@ class Test_agent14(BaseAgent):
                                 "priority": "medium"
                             },
                             "tags": tags
-                        }
+                        },
+                        timeout=3  # Add timeout to prevent hanging
                     )
                     
                     if response.status_code in [200, 201]:
+                        logger.info(f"Successfully stored memory via API with tags: {tags}")
                         return True
                     else:
-                        logger.warning(f"Memory creation failed with status code: {response.status_code}")
+                        logger.info(f"Memory creation skipped: API returned {response.status_code}")
+                        return False
                 except Exception as e:
-                    logger.warning(f"Error creating memory via API: {e}")
-            
-            return False
+                    logger.info(f"Memory storage unavailable: {str(e)}")
+                    return False
         except Exception as e:
-            logger.warning(f"Error creating memory: {e}")
+            logger.info(f"Memory operations skipped: {str(e)}")
             return False
+        
+        return False
     
     def get_llm_response(self, messages, model="gpt-4o", temperature=0.7):
         """
@@ -436,19 +473,24 @@ class Test_agent14(BaseAgent):
                     "response": f"Hello! I'm {self.name}, a Q&A agent that can answer your questions using my knowledge. How can I help you?"
                 }
                 
-            # Retrieve relevant memories for context
-            memories = self.get_relevant_memories(query)
-            memory_context = ""
-            if memories:
-                memory_context = "Relevant context:\n"
-                for idx, memory in enumerate(memories[:3]):
-                    if isinstance(memory, dict):
-                        memory_content = memory.get('content', '')
-                    else:
-                        memory_content = getattr(memory, 'content', '')
-                    
-                    if memory_content:
-                        memory_context += f"{idx+1}. {memory_content}\n"
+            # Try to retrieve relevant memories for context, but continue even if it fails
+            try:
+                memories = self.get_relevant_memories(query)
+                memory_context = ""
+                if memories:
+                    memory_context = "Relevant context:\n"
+                    for idx, memory in enumerate(memories[:3]):
+                        if isinstance(memory, dict):
+                            memory_content = memory.get('content', '')
+                        else:
+                            memory_content = getattr(memory, 'content', '')
+                        
+                        if memory_content:
+                            memory_context += f"{idx+1}. {memory_content}\n"
+            except Exception as e:
+                logger.info(f"Skipping memory retrieval due to error: {str(e)}")
+                memories = []
+                memory_context = ""
             
             # Prepare the prompt for the LLM with retrieved context
             system_prompt = (
@@ -468,19 +510,23 @@ class Test_agent14(BaseAgent):
             # Get response from LLM
             llm_response = self.get_llm_response(messages)
             
-            # If the response seems valuable, store it in memory
-            if len(llm_response) > 50 and not query.strip() in ['help', 'hello', 'hi']:
-                memory_content = f"Question: {content}\nAnswer: {llm_response}"
-                # Extract potential tags from the query for better retrievability
-                tags = ["qa", "answer"]
-                
-                # Add domain-specific tags based on keywords
-                keywords = ["how", "what", "why", "when", "who", "where"]
-                for keyword in keywords:
-                    if keyword in query:
-                        tags.append(keyword)
-                
-                self.store_memory(memory_content, tags)
+            # Try to store the response in memory if it seems valuable, but continue even if it fails
+            try:
+                if len(llm_response) > 50 and not query.strip() in ['help', 'hello', 'hi']:
+                    memory_content = f"Question: {content}\nAnswer: {llm_response}"
+                    # Extract potential tags from the query for better retrievability
+                    tags = ["qa", "answer"]
+                    
+                    # Add domain-specific tags based on keywords
+                    keywords = ["how", "what", "why", "when", "who", "where"]
+                    for keyword in keywords:
+                        if keyword in query:
+                            tags.append(keyword)
+                    
+                    # Don't let memory errors block the response
+                    self.store_memory(memory_content, tags)
+            except Exception as e:
+                logger.info(f"Skipping memory storage due to error: {str(e)}")
             
             # Return the response
             return {
