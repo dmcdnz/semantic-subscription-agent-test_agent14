@@ -232,6 +232,173 @@ class Test_agent14(BaseAgent):
         #     "another_keyword"
         # ])
     
+    # Import necessary modules for LLM access
+    try:
+        # First try to import from semsubscription if available (for local development)
+        from semsubscription.llm.completion import get_completion
+        from semsubscription.memory.memories import search_memories, create_memory
+    except ImportError:
+        # Fallback for containerized environments - use API endpoints
+        import requests
+        import os
+    
+    def get_relevant_memories(self, query, limit=3):
+        """
+        Retrieve relevant memories for context based on the query
+        
+        Args:
+            query: The query to search memories for
+            limit: Maximum number of memories to retrieve
+            
+        Returns:
+            List of relevant memories or empty list if no matches or error occurs
+        """
+        try:
+            # Try to use direct memory API if available
+            try:
+                memories = search_memories(
+                    query=query,
+                    limit=limit,
+                    min_similarity=0.7
+                )
+                return memories
+            except NameError:
+                # Fallback to API endpoint for containerized environments
+                try:
+                    core_api_url = os.environ.get("CORE_API_URL", "http://host.docker.internal:8888")
+                    
+                    response = requests.post(
+                        f"{core_api_url}/api/memories/search",
+                        json={
+                            "query": query,
+                            "limit": limit,
+                            "min_similarity": 0.7
+                        }
+                    )
+                    
+                    if response.status_code == 200:
+                        return response.json()
+                    else:
+                        logger.warning(f"Memory search failed with status code: {response.status_code}")
+                except Exception as e:
+                    logger.warning(f"Error retrieving memories via API: {e}")
+            
+            return []
+        except Exception as e:
+            logger.warning(f"Error retrieving memories: {e}")
+            return []
+    
+    def store_memory(self, content, tags=[]):
+        """
+        Store important information as a memory
+        
+        Args:
+            content: The content to store
+            tags: List of tags to associate with the memory
+            
+        Returns:
+            Boolean indicating success
+        """
+        try:
+            # Try to use direct memory API if available
+            try:
+                memory = create_memory(
+                    content=content,
+                    metadata={
+                        "source": self.name,
+                        "priority": "medium"
+                    },
+                    tags=tags
+                )
+                return True
+            except NameError:
+                # Fallback to API endpoint for containerized environments
+                try:
+                    core_api_url = os.environ.get("CORE_API_URL", "http://host.docker.internal:8888")
+                    
+                    response = requests.post(
+                        f"{core_api_url}/api/memories/",
+                        json={
+                            "content": content,
+                            "metadata": {
+                                "source": self.name,
+                                "priority": "medium"
+                            },
+                            "tags": tags
+                        }
+                    )
+                    
+                    if response.status_code in [200, 201]:
+                        return True
+                    else:
+                        logger.warning(f"Memory creation failed with status code: {response.status_code}")
+                except Exception as e:
+                    logger.warning(f"Error creating memory via API: {e}")
+            
+            return False
+        except Exception as e:
+            logger.warning(f"Error creating memory: {e}")
+            return False
+    
+    def get_llm_response(self, messages, model="gpt-4o", temperature=0.7):
+        """
+        Get a response from the LLM using either direct module or API
+        
+        Args:
+            messages: List of message dictionaries with role and content
+            model: The model to use
+            temperature: Creativity parameter
+            
+        Returns:
+            The LLM's response text
+        """
+        try:
+            # Try to use direct LLM API if available
+            try:
+                # For completion-style models
+                system_message = next((m["content"] for m in messages if m["role"] == "system"), None)
+                user_message = next((m["content"] for m in messages if m["role"] == "user"), None)
+                
+                if system_message and user_message:
+                    prompt = f"{system_message}\n\nUser: {user_message}"
+                else:
+                    prompt = user_message
+                
+                response = get_completion(
+                    prompt=prompt,
+                    model=model,
+                    temperature=temperature
+                )
+                return response
+            except NameError:
+                # Fallback to API endpoint for containerized environments
+                try:
+                    core_api_url = os.environ.get("CORE_API_URL", "http://host.docker.internal:8888")
+                    
+                    response = requests.post(
+                        f"{core_api_url}/api/llm/chat",
+                        json={
+                            "messages": messages,
+                            "model": model,
+                            "temperature": temperature,
+                            "agent_id": self.agent_id
+                        }
+                    )
+                    
+                    if response.status_code == 200:
+                        llm_response = response.json()
+                        return llm_response.get("text", "")
+                    else:
+                        logger.warning(f"LLM request failed with status code: {response.status_code}")
+                        return "I'm currently unable to access my knowledge base. Please try again later."
+                except Exception as e:
+                    logger.warning(f"Error getting LLM response via API: {e}")
+                    return f"I encountered an error while processing your request: {str(e)}"
+            
+        except Exception as e:
+            logger.warning(f"Error getting LLM response: {e}")
+            return f"I encountered an error while processing your request: {str(e)}"
+    
     def process_message(self, message) -> Optional[Dict[str, Any]]:
         """
         Process domain-specific queries
@@ -257,44 +424,65 @@ class Test_agent14(BaseAgent):
             logger.info(f"Processing message {message_id} with content: '{content[:50]}...'")
             logger.info(f"Message successfully received via event bus")
             
-            # Domain for {domain}
-            # Add your domain-specific processing logic here
-            
-            # Test confirmation response to show the message bus is working
-            if True:  # Always provide a response for testing
+            # Handle basic help or greeting queries directly
+            if query.strip() in ['help', 'hello', 'hi']:
                 return {
                     "agent": self.name,
-                    "response": f"Message received by {self.name}! This confirms the event bus is working properly.",
-                    "message_id": message_id,
-                    "content_preview": content[:100] + ("..." if len(content) > 100 else "")
+                    "response": f"Hello! I'm {self.name}, a Q&A agent that can answer your questions using my knowledge. How can I help you?"
                 }
+                
+            # Retrieve relevant memories for context
+            memories = self.get_relevant_memories(query)
+            memory_context = ""
+            if memories:
+                memory_context = "Relevant context:\n"
+                for idx, memory in enumerate(memories[:3]):
+                    if isinstance(memory, dict):
+                        memory_content = memory.get('content', '')
+                    else:
+                        memory_content = getattr(memory, 'content', '')
+                    
+                    if memory_content:
+                        memory_context += f"{idx+1}. {memory_content}\n"
             
-            # Example pattern matching for various domain queries
-            # These are for when you customize the agent for your specific domain
-            if 'help' in query or 'hello' in query:
-                return {
-                    "agent": self.name,
-                    "response": f"Hello! I'm {self.name}, an agent that {self.description.lower()}. How can I help you?"
-                }
-            elif '{domain}' in query:
-                return {
-                    "agent": self.name,
-                    "response": f"I detected a {domain} related query: {content}"
-                }
-            #
-            # Example:
-            # if "weather" in query and ("forecast" in query or "today" in query):
-            #     return {
-            #         "agent": self.name,
-            #         "query_type": "weather_forecast",
-            #         "forecast": "Sunny with a high of 72°F"
-            #     }}
+            # Prepare the prompt for the LLM with retrieved context
+            system_prompt = (
+                "You are a helpful and knowledgeable assistant that provides accurate, concise answers to questions. "
+                "If you don't know the answer to a question, admit that you don't know rather than making up information. "
+                "Always cite sources if mentioned in the context provided. "
+            )
             
-            # Default response if no pattern matches
+            if memory_context:
+                system_prompt += f"\n\nUse the following context to help answer the question, but only if relevant:\n{memory_context}"
+            
+            messages = [
+                {"role": "system", "content": system_prompt},
+                {"role": "user", "content": content}
+            ]
+            
+            # Get response from LLM
+            llm_response = self.get_llm_response(messages)
+            
+            # If the response seems valuable, store it in memory
+            if len(llm_response) > 50 and not query.strip() in ['help', 'hello', 'hi']:
+                memory_content = f"Question: {content}\nAnswer: {llm_response}"
+                # Extract potential tags from the query for better retrievability
+                tags = ["qa", "answer"]
+                
+                # Add domain-specific tags based on keywords
+                keywords = ["how", "what", "why", "when", "who", "where"]
+                for keyword in keywords:
+                    if keyword in query:
+                        tags.append(keyword)
+                
+                self.store_memory(memory_content, tags)
+            
+            # Return the response
             return {
                 "agent": self.name,
-                "query_type": "general_response",
-                "response": f"I received your query in the {domain} domain. This is a placeholder response."
+                "query_type": "qa_response",
+                "response": llm_response,
+                "message_id": message_id
             }
             
         except Exception as e:
