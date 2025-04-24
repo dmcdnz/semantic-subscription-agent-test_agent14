@@ -13,6 +13,12 @@ import re
 import uuid
 from typing import Dict, Any, Optional
 
+# Import requests for API access
+try:
+    import requests
+except ImportError:
+    pass
+
 # For containerized agents, use the local base agent
 # This avoids dependencies on the semsubscription module
 try:
@@ -239,8 +245,7 @@ class Test_agent14(BaseAgent):
         from semsubscription.memory.memories import search_memories, create_memory
     except ImportError:
         # Fallback for containerized environments - use API endpoints
-        import requests
-        import os
+        pass
     
     def get_relevant_memories(self, query, limit=3):
         """
