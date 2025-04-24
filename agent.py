@@ -98,10 +98,22 @@ class QuestionAnsweringAgentAgent(LLMAgent):
         """
         # Don't call super().setup_interest_model() as we're creating a new custom interest model
         
-        # Get the path to the fine-tuned model
-        model_path = os.path.join(os.path.dirname(__file__), "fine_tuned_model")
+        # Get the absolute path to the fine-tuned model
+        model_path = os.path.abspath(os.path.join(os.path.dirname(__file__), "fine_tuned_model"))
         logger.info(f"Using fine-tuned model from: {model_path}")
         
+        # Check if the model directory exists and contains essential files
+        missing_files = []
+        essential_files = ['model.safetensors', 'classification_head.pt', 'config.json', 'tokenizer.json']
+        for file in essential_files:
+            if not os.path.exists(os.path.join(model_path, file)):
+                missing_files.append(file)
+                
+        if missing_files:
+            logger.warning(f"Fine-tuned model directory is missing essential files: {', '.join(missing_files)}")
+        else:
+            logger.info("Fine-tuned model directory contains all essential files")
+            
         try:
             # Create embedding engine with the local fine-tuned model
             from semsubscription.vector_db.embedding import EmbeddingEngine, InterestModel
@@ -135,7 +147,11 @@ class QuestionAnsweringAgentAgent(LLMAgent):
             if not self.question_patterns:
                 self.question_patterns = [
                     re.compile(r'^(?:what|who|where|when|why|how|is|are|can|could|would|will|should)', re.IGNORECASE),
-                    re.compile(r'.*\?$', re.IGNORECASE)
+                    re.compile(r'.*\?$', re.IGNORECASE),
+                    re.compile(r'\bi (?:need|want|would like) to know\b', re.IGNORECASE),  # Information seeking
+                    re.compile(r'\bexplain(?:\s+to\s+me)?\b', re.IGNORECASE),  # Explanation requests
+                    re.compile(r'\bdo you know\b.*?', re.IGNORECASE),  # Knowledge queries
+                    re.compile(r'\bi\'m (?:curious|wondering|asking|interested)\b', re.IGNORECASE)  # Curiosity indicators
                 ]
                 
             # Configure other agent settings from config
@@ -165,11 +181,156 @@ class QuestionAnsweringAgentAgent(LLMAgent):
                 
         except Exception as e:
             logger.error(f"Error setting up fine-tuned model: {e}")
-            # Fall back to default setup if fine-tuned model fails
-            super().setup_interest_model()
-            logger.warning("Fell back to default interest model setup due to error with fine-tuned model")
+            logger.warning("Falling back to basic question detection without the fine-tuned model")
+            
+            # Create a minimal interest model
+            from semsubscription.vector_db.embedding import InterestModel
+            try:
+                # Try to create a basic interest model
+                self.interest_model = InterestModel()
+                
+                # Add question-related keywords for backup matching
+                self.interest_model.keywords = [
+                    'question', 'answer', 'how', 'what', 'when', 'where', 'why',
+                    'who', 'which', 'whose', 'explain', 'tell me', 'describe',
+                    'help me understand', '?'
+                ]
+            except Exception as e2:
+                logger.error(f"Error creating basic interest model: {e2}")
+                # Continue with patterns only
+                pass
+                
+            # Always set up the question patterns even if interest model fails
+            self.question_patterns = [
+                re.compile(r'^(?:what|who|where|when|why|how|is|are|can|could|would|will|should)', re.IGNORECASE),
+                re.compile(r'.*\?$', re.IGNORECASE),
+                re.compile(r'\bi (?:need|want|would like) to know\b', re.IGNORECASE),  # Information seeking
+                re.compile(r'\bexplain(?:\s+to\s+me)?\b', re.IGNORECASE),  # Explanation requests
+                re.compile(r'\bdo you know\b.*?', re.IGNORECASE),  # Knowledge queries
+                re.compile(r'\bi\'m (?:curious|wondering|asking|interested)\b', re.IGNORECASE)  # Curiosity indicators
+            ]
+            
+            # Set a lower threshold to catch more potential questions
+            self.similarity_threshold = 0.4  # Even lower for fallback mode
     
-    def is_interested(self, message: Message) -> bool:
+    # CRITICAL METHOD: This directly overrides the BaseAgent's calculate_interest method
+    def calculate_interest(self, message) -> float:
+        """
+        Calculate interest level for a message.
+        
+        This method DIRECTLY overrides BaseAgent.calculate_interest to ensure proper
+        interest calculation for question detection, prioritizing the fine-tuned model.
+        
+        Args:
+            message: Message to calculate interest for (dict or object)
+            
+        Returns:
+            float: Interest score between 0.0 and 1.0
+        """
+        # Extract content based on message type (dict or object)
+        content = ""
+        message_id = "unknown"
+        
+        if isinstance(message, dict):
+            content = message.get('content', 'No content in dict')
+            message_id = message.get('id', 'unknown-id')
+        else:
+            content = getattr(message, 'content', 'No content in object')
+            message_id = getattr(message, 'id', 'unknown-id')
+        
+        # Structured content handling
+        if isinstance(content, dict) and 'message' in content:
+            content = content['message']
+        elif isinstance(content, dict) and 'content' in content:
+            content = content['content']
+        
+        # Convert to string if necessary
+        if not isinstance(content, str):
+            try:
+                content = str(content)
+            except Exception as e:
+                logger.warning(f"Cannot convert message content to string: {e}")
+                content = ""
+                
+        logger.info(f"Calculating interest for message {message_id}")
+        logger.info(f"Message content: {content[:100]}...")
+        
+        # PRIORITY 1: Use the fine-tuned interest model - this is the primary approach
+        # The fine-tuned model should be loaded during setup_interest_model
+        if hasattr(self, 'interest_model') and self.interest_model:
+            try:
+                # This is the main calculation using the fine-tuned model
+                interest_score = self.interest_model.calculate_similarity(content)
+                logger.info(f"Fine-tuned model interest score: {interest_score}")
+                
+                # If score is above our interest threshold, return it immediately
+                if interest_score >= self.similarity_threshold:
+                    return interest_score
+                    
+                # If fine-tuned model gave us a non-zero score but below threshold,
+                # we'll keep it as a baseline but still check patterns
+                if interest_score > 0:
+                    baseline_score = interest_score
+                else:
+                    # Something's wrong with the model score, set a reasonable baseline
+                    baseline_score = 0.4
+            except Exception as e:
+                logger.error(f"Error using fine-tuned interest model: {e}")
+                baseline_score = 0.4  # Set a reasonable baseline for fallback
+        else:
+            logger.warning("No fine-tuned interest model available")
+            baseline_score = 0.4  # Set a reasonable baseline for fallback
+            
+        # PRIORITY 2: Check for direct question patterns as additional detection layer
+        # This can catch questions even if the fine-tuned model fails to recognize them
+        if hasattr(self, 'question_patterns'):
+            for pattern in self.question_patterns:
+                if pattern.search(content):
+                    pattern_score = 0.9  # High confidence for direct question matches
+                    logger.info(f"Question pattern matched: {pattern.pattern}. Score: {pattern_score}")
+                    return pattern_score
+        
+        # PRIORITY 3: Use keyword matching as final detection layer
+        # This catches questions that might be phrased in ways the model or patterns miss
+        keywords = []
+        
+        # Use keywords from the interest model if available
+        if hasattr(self, 'interest_model') and hasattr(self.interest_model, 'keywords'):
+            keywords = self.interest_model.keywords
+        
+        # Fallback to default keywords if needed
+        if not keywords:
+            keywords = [
+                # Common question keywords
+                'question', 'answer', 'how', 'what', 'when', 'where', 'why',
+                'who', 'which', 'whose', 'explain', 'tell me', 'describe',
+                'help me understand', '?'
+            ]
+            
+            # Add these to the interest model if available for future use
+            if hasattr(self, 'interest_model') and not hasattr(self.interest_model, 'keywords'):
+                self.interest_model.keywords = keywords
+        
+        # Count keyword matches
+        matches = 0
+        content_lower = content.lower()
+        for keyword in keywords:
+            if str(keyword).lower() in content_lower:
+                matches += 1
+                logger.info(f"Keyword match on '{keyword}'")
+        
+        # Calculate interest score based on keyword density
+        if matches > 0:
+            # At least one keyword match - express interest
+            keyword_score = min(0.5 + (matches * 0.1), 1.0)  # Scale with matches, cap at 1.0
+            logger.info(f"Keyword interest calculation: {keyword_score} (based on {matches} keyword matches)")
+            return max(keyword_score, baseline_score)  # Take the highest of keyword vs baseline
+            
+        # FINAL FALLBACK: Return our baseline interest with a log message
+        logger.info(f"Using baseline interest score: {baseline_score}")
+        return baseline_score  # Return the baseline we established earlier
+        
+    def is_interested(self, message) -> bool:
         """
         Determine if the message contains a question
         
@@ -179,40 +340,13 @@ class QuestionAnsweringAgentAgent(LLMAgent):
         Returns:
             True if the message contains a question, False otherwise
         """
-        # Check if a classifier decision has already been made
-        if hasattr(message, 'classifier_decision'):
-            return message.classifier_decision
+        # Use our calculate_interest method and compare to threshold
+        interest_score = self.calculate_interest(message)
+        interested = interest_score >= self.similarity_threshold
         
-        # Get the message content - handle both direct strings and structured messages
-        content = message.content
-        if isinstance(content, dict) and 'message' in content:
-            content = content['message']
-        elif isinstance(content, dict) and 'content' in content:
-            content = content['content']
-        
-        if not isinstance(content, str):
-            # Try to convert to string if possible
-            try:
-                content = str(content)
-            except:
-                logger.warning(f"Cannot process non-string message content: {type(content)}")
-                return False
-            
-        # Try pattern matching first for efficiency
-        for pattern in self.question_patterns:
-            if pattern.search(content):
-                logger.info(f"Question pattern match: {content[:50]}...")
-                return True
-                
-        # Try keyword matching as a fallback
-        content_lower = content.lower()
-        for keyword in self.interest_model.keywords:
-            if keyword.lower() in content_lower:
-                logger.info(f"Question keyword match on '{keyword}': {content[:50]}...")
-                return True
-        
-        # Fall back to the standard interest determination
-        return super().is_interested(message)
+        # Log the result
+        logger.info(f"Interest score: {interest_score}, threshold: {self.similarity_threshold}, interested: {interested}")
+        return interested
         
     async def process_message_async(self, message: Message) -> Optional[Dict[str, Any]]:
         """
