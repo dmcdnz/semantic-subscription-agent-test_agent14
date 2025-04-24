@@ -423,6 +423,72 @@ class Test_agent14(BaseAgent):
             re.compile(r"\bi'm (?:curious|wondering|asking|interested)\b", re.IGNORECASE)  # Curiosity indicators
         ]
     
+    def calculate_interest(self, message):
+        """
+        Calculate interest level for a message.
+        
+        This uses question detection patterns, the fine-tuned model, or falls back
+        to keyword matching.
+        
+        Args:
+            message: Message to calculate interest for (dict or object)
+            
+        Returns:
+            float: Interest score between 0.0 and 1.0
+        """
+        # Extract content based on message type (dict or object)
+        content = ""
+        message_id = "unknown"
+        
+        if isinstance(message, dict):
+            content = message.get('content', 'No content in dict')
+            message_id = message.get('id', 'unknown-id')
+        else:
+            content = getattr(message, 'content', 'No content in object')
+            message_id = getattr(message, 'id', 'unknown-id')
+        
+        logger.info(f"Calculating interest for message {message_id}")
+        logger.info(f"Message content: {content[:100]}...")
+        
+        # Check for direct question patterns
+        if hasattr(self, 'question_patterns'):
+            for pattern in self.question_patterns:
+                if pattern.search(content):
+                    logger.info(f"Question pattern matched: {pattern.pattern}")
+                    return 0.9  # High confidence for direct question matches
+            
+        # Use the interest model if available
+        if hasattr(self, 'interest_model') and self.interest_model:
+            try:
+                # This is the key method to call for the interest model
+                interest_score = self.interest_model.calculate_similarity(content)
+                logger.info(f"Interest model score: {interest_score}")
+                return interest_score
+            except Exception as e:
+                logger.error(f"Error using interest model: {e}")
+                # Continue to fallback implementation
+        
+        # Fallback implementation for question detection
+        keywords = [
+            # Question-related keywords
+            "question", "answer", "why", "how", "what", "when", "who",
+            "where", "explain", "tell me", "could you", "can you", "would you"
+        ]
+        
+        # Count keyword matches
+        matches = sum(1 for keyword in keywords if keyword.lower() in content.lower())
+        
+        # Calculate interest score based on keyword density
+        if matches > 0:
+            # At least one keyword match - express interest
+            interest_score = min(0.5 + (matches * 0.1), 1.0)  # Scale with matches, cap at 1.0
+        else:
+            # No keywords match, provide minimal interest for potential questions
+            interest_score = 0.3  # Some minimal interest
+        
+        logger.info(f"Fallback interest calculation: {interest_score} (based on {matches} keyword matches)")
+        return interest_score
+            
     def is_interested(self, message):
         """
         Determine if the message contains a question
@@ -447,8 +513,9 @@ class Test_agent14(BaseAgent):
                     return True
                     
         # If no pattern matches, use the classifier or similarity model
-        # This will be handled by the parent class calculate_interest method
-        return False
+        interest_score = self.calculate_interest(message)
+        threshold = max(self.similarity_threshold, self.classifier_threshold)
+        return interest_score >= threshold
     
     async def process_message_async(self, message):
         """
