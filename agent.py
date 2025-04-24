@@ -102,7 +102,12 @@ class QuestionAnsweringAgentAgent(LLMAgent):
         model_path = os.path.abspath(os.path.join(os.path.dirname(__file__), "fine_tuned_model"))
         logger.info(f"Using fine-tuned model from: {model_path}")
         
-        # Check if the model directory exists and contains essential files
+        # Check if the directory exists
+        if not os.path.exists(model_path):
+            logger.error(f"Fine-tuned model directory not found at: {model_path}")
+            raise FileNotFoundError(f"Model directory not found: {model_path}")
+            
+        # Check if the model directory contains essential files
         missing_files = []
         essential_files = ['model.safetensors', 'classification_head.pt', 'config.json', 'tokenizer.json']
         for file in essential_files:
@@ -111,24 +116,63 @@ class QuestionAnsweringAgentAgent(LLMAgent):
                 
         if missing_files:
             logger.warning(f"Fine-tuned model directory is missing essential files: {', '.join(missing_files)}")
+            logger.warning("Attempting to continue, but model loading may fail")
         else:
             logger.info("Fine-tuned model directory contains all essential files")
+        
+        # Set similarity threshold - this is CRITICAL
+        # This threshold determines if the agent is interested in a message
+        self.similarity_threshold = 0.4  # Lower threshold for better recall
+        logger.info(f"Setting similarity threshold to {self.similarity_threshold}")
             
         try:
-            # Create embedding engine with the local fine-tuned model
-            from semsubscription.vector_db.embedding import EmbeddingEngine, InterestModel
+            # Import the proper dependencies
+            from semsubscription.vector_db.embedding import EmbeddingEngine
+            # IMPORTANT: Use our CustomInterestModel instead of the base InterestModel
+            from interest_model import CustomInterestModel
             
             # Create a custom embedding engine pointing to our fine-tuned model
             embedding_engine = EmbeddingEngine(model_name=model_path)
             logger.info(f"Successfully loaded fine-tuned model with dimension: {embedding_engine.get_dimension()}")
             
             # Create interest model with the custom embedding engine
-            self.interest_model = InterestModel(embedding_engine=embedding_engine)
+            self.interest_model = CustomInterestModel(embedding_engine=embedding_engine)
+            logger.info("Successfully created CustomInterestModel with the fine-tuned model")
+            
+            # Configure the interest model parameters
+            self.interest_model.similarity_threshold = self.similarity_threshold  # Pass our threshold to the model
+        except Exception as e:
+            logger.error(f"Error importing semsubscription modules: {e}")
+            raise
             
             # Lower the threshold to catch more potential questions
             self.similarity_threshold = 0.5  # Lower this from default (likely 0.67)
             self.interest_model.threshold = self.similarity_threshold
             logger.info(f"Set similarity threshold to {self.similarity_threshold}")
+            
+            # CRITICAL: Register example interests to train the model
+            # These examples teach the model what patterns to look for
+            positive_examples = [
+                "What is the answer to this question?",
+                "Can you tell me how to do this?",
+                "I'm wondering about the best approach",
+                "How does this system work?",
+                "When will the feature be ready?",
+                "Where can I find documentation?",
+                "Why does this code not work?",
+                "Could you explain this concept?",
+                "I need help understanding this error",
+                "What's the best way to implement this feature?",
+                "Is there a simpler solution to this problem?"
+            ]
+            
+            # Register the examples with the interest model
+            if hasattr(self.interest_model, 'register_examples'):
+                try:
+                    self.interest_model.register_examples(positive_examples)
+                    logger.info(f"Registered {len(positive_examples)} positive examples with interest model")
+                except Exception as e:
+                    logger.error(f"Failed to register examples: {e}")
             
             # Add question-related keywords for backup matching
             self.interest_model.keywords = [
@@ -255,31 +299,26 @@ class QuestionAnsweringAgentAgent(LLMAgent):
         logger.info(f"Calculating interest for message {message_id}")
         logger.info(f"Message content: {content[:100]}...")
         
-        # PRIORITY 1: Use the fine-tuned interest model - this is the primary approach
-        # The fine-tuned model should be loaded during setup_interest_model
+        # PRIORITY 1: Use the fine-tuned interest model with custom interest calculation
         if hasattr(self, 'interest_model') and self.interest_model:
             try:
-                # This is the main calculation using the fine-tuned model
-                interest_score = self.interest_model.calculate_similarity(content)
-                logger.info(f"Fine-tuned model interest score: {interest_score}")
+                # Calculate actual semantic similarity using the custom interest model
+                # This will properly use the vector embeddings from the fine-tuned model
+                similarity_score = self.interest_model.calculate_similarity(content)
+                logger.info(f"Fine-tuned model similarity score: {similarity_score}")
                 
-                # If score is above our interest threshold, return it immediately
-                if interest_score >= self.similarity_threshold:
-                    return interest_score
-                    
-                # If fine-tuned model gave us a non-zero score but below threshold,
-                # we'll keep it as a baseline but still check patterns
-                if interest_score > 0:
-                    baseline_score = interest_score
-                else:
-                    # Something's wrong with the model score, set a reasonable baseline
-                    baseline_score = 0.4
+                # Provide a detailed breakdown of the decision process for debugging
+                logger.info(f"Similarity threshold: {self.similarity_threshold}")
+                
+                # If the model gives a valid score, return it
+                if similarity_score >= 0.0:
+                    # Return the actual score - this ensures proper prioritization based on relevance
+                    return similarity_score
             except Exception as e:
-                logger.error(f"Error using fine-tuned interest model: {e}")
-                baseline_score = 0.4  # Set a reasonable baseline for fallback
+                logger.error(f"Error in fine-tuned model calculation: {e}")
+                # Continue to pattern matching if model fails
         else:
-            logger.warning("No fine-tuned interest model available")
-            baseline_score = 0.4  # Set a reasonable baseline for fallback
+            logger.warning("No interest model available - falling back to pattern matching")
             
         # PRIORITY 2: Check for direct question patterns as additional detection layer
         # This can catch questions even if the fine-tuned model fails to recognize them
@@ -340,12 +379,29 @@ class QuestionAnsweringAgentAgent(LLMAgent):
         Returns:
             True if the message contains a question, False otherwise
         """
-        # Use our calculate_interest method and compare to threshold
+        # First check if a classifier decision has already been made
+        if hasattr(message, 'classifier_decision'):
+            decision = message.classifier_decision
+            logger.info(f"Using pre-made classifier decision: {decision}")
+            return decision
+            
+        # Calculate actual interest using our method
         interest_score = self.calculate_interest(message)
+        
+        # Compare to threshold to determine interest
         interested = interest_score >= self.similarity_threshold
         
-        # Log the result
-        logger.info(f"Interest score: {interest_score}, threshold: {self.similarity_threshold}, interested: {interested}")
+        # Log the result in detail for debugging
+        logger.info(f"Interest calculation: score={interest_score:.4f}, threshold={self.similarity_threshold:.4f}, interested={interested}")
+        
+        # Store the decision on the message object for future reference
+        if hasattr(message, '__setattr__'):
+            try:
+                setattr(message, 'classifier_decision', interested)
+                setattr(message, 'interest_score', interest_score)
+            except:
+                pass  # Ignore if we can't set attributes
+                
         return interested
         
     async def process_message_async(self, message: Message) -> Optional[Dict[str, Any]]:
