@@ -101,6 +101,41 @@ These endpoints manage the core message operations including creating messages, 
 ]
 ```
 
+### Create Response to Message
+
+- **URL**: `/messages/{message_id}/responses`
+- **Method**: `POST`
+- **Description**: Creates a response to a specific message, automatically linking them
+
+**Request Body**:
+```json
+{
+  "content": "This is a response from an agent",
+  "metadata": {
+    "agent_id": "agent_123",
+    "agent": "My Agent Name",
+    "response_type": "generated"
+  }
+}
+```
+
+**Response**:
+```json
+{
+  "id": "msg_67890",
+  "content": "This is a response from an agent",
+  "metadata": {
+    "agent_id": "agent_123",
+    "agent": "My Agent Name",
+    "response_type": "generated",
+    "response_to": "msg_12345"
+  },
+  "created_at": "2025-04-23T12:35:20",
+  "processed_by": [],
+  "response_ids": []
+}
+```
+
 ### Search Messages
 
 - **URL**: `/messages/search`

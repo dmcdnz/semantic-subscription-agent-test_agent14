@@ -424,21 +424,22 @@ class Test_agent14(BaseAgent):
                             "model": model,
                             "temperature": temperature,
                             "agent_id": self.agent_id
-                        }
+                        },
+                        timeout=5  # Slightly longer timeout for LLM calls
                     )
                     
                     if response.status_code == 200:
                         llm_response = response.json()
                         return llm_response.get("text", "")
                     else:
-                        logger.warning(f"LLM request failed with status code: {response.status_code}")
+                        logger.info(f"LLM request failed with status code: {response.status_code}")
                         return "I'm currently unable to access my knowledge base. Please try again later."
                 except Exception as e:
-                    logger.warning(f"Error getting LLM response via API: {e}")
+                    logger.info(f"Error getting LLM response via API: {e}")
                     return f"I encountered an error while processing your request: {str(e)}"
             
         except Exception as e:
-            logger.warning(f"Error getting LLM response: {e}")
+            logger.info(f"Error getting LLM response: {e}")
             return f"I encountered an error while processing your request: {str(e)}"
     
     def process_message(self, message) -> Optional[Dict[str, Any]]:
@@ -528,13 +529,76 @@ class Test_agent14(BaseAgent):
             except Exception as e:
                 logger.info(f"Skipping memory storage due to error: {str(e)}")
             
-            # Return the response
-            return {
-                "agent": self.name,
-                "query_type": "qa_response",
-                "response": llm_response,
-                "message_id": message_id
-            }
+            # Instead of returning the response directly, use the new Create Response to Message endpoint
+            try:
+                # Only proceed if requests is available
+                if 'requests' not in globals() and 'requests' not in locals():
+                    logger.info("Response submission skipped: requests module not available")
+                    # Fall back to returning the response directly
+                    return {
+                        "agent": self.name,
+                        "query_type": "qa_response",
+                        "response": llm_response,
+                        "message_id": message_id
+                    }
+                
+                # Prepare the response data
+                response_data = {
+                    "content": llm_response,
+                    "metadata": {
+                        "agent_id": self.agent_id,
+                        "agent": self.name,
+                        "response_type": "generated",
+                        "query_type": "qa_response"
+                    }
+                }
+                
+                # Get the API URL, defaulting to the host-accessible Docker address
+                core_api_url = os.environ.get("CORE_API_URL", "http://host.docker.internal:8888")
+                
+                # Post the response to the message
+                api_response = requests.post(
+                    f"{core_api_url}/api/messages/{message_id}/responses",
+                    json=response_data,
+                    timeout=5  # Add timeout to prevent hanging
+                )
+                
+                if api_response.status_code in [200, 201]:
+                    # Get the created response message
+                    response_message = api_response.json()
+                    response_id = response_message.get('id', 'unknown')
+                    logger.info(f"Successfully created response message with ID: {response_id}")
+                    
+                    # Return the response information
+                    return {
+                        "agent": self.name,
+                        "query_type": "qa_response",
+                        "response": llm_response,
+                        "message_id": message_id,
+                        "response_id": response_id,
+                        "response_created": True
+                    }
+                else:
+                    logger.info(f"Failed to create response message: {api_response.status_code}")
+                    # Fall back to returning the response directly
+                    return {
+                        "agent": self.name,
+                        "query_type": "qa_response",
+                        "response": llm_response,
+                        "message_id": message_id,
+                        "response_created": False
+                    }
+                    
+            except Exception as e:
+                logger.info(f"Error creating response message: {str(e)}")
+                # Fall back to returning the response directly
+                return {
+                    "agent": self.name,
+                    "query_type": "qa_response",
+                    "response": llm_response,
+                    "message_id": message_id,
+                    "error": str(e)
+                }
             
         except Exception as e:
             logger.error(f"Error in Test_agent14 Agent processing: {e}")
