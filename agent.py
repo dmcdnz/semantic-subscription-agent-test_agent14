@@ -1,9 +1,11 @@
 #!/usr/bin/env python
 
 """
-Test_agent14 Agent Implementation
+Question Answering Agent Implementation
 
-test
+Detects and answers questions using an LLM. The agent identifies questions based on both
+natural language patterns and vector similarity, then uses an LLM to generate accurate
+and helpful answers.
 """
 
 import json
@@ -11,7 +13,9 @@ import logging
 import os
 import re
 import uuid
-from typing import Dict, Any, Optional
+import asyncio
+import time
+from typing import Dict, Any, Optional, List, Union
 
 # For containerized agents, use the local base agent
 # This avoids dependencies on the semsubscription module
@@ -122,15 +126,41 @@ except ImportError:
                     logger.info(f"Generated response: {str(response)[:200]}...")
                     return response
 
+# Try to import LLM completion function
+try:
+    from semsubscription.llm.completion import get_completion, get_completion_async
+except ImportError:
+    # Define fallback functions if not available
+    def get_completion(prompt, model="gpt-4", temperature=0.7):
+        logger.warning("Using fallback LLM completion function - no actual LLM calls will be made")
+        return f"This is a fallback response. In production, this would be answered using an LLM with prompt: {prompt[:50]}..."
+        
+    async def get_completion_async(prompt, model="gpt-4", temperature=0.7):
+        logger.warning("Using fallback async LLM completion function - no actual LLM calls will be made")
+        return f"This is a fallback async response. In production, this would be answered using an LLM with prompt: {prompt[:50]}..."
+
+# Try to import memory system
+try:
+    from semsubscription.memory.vector_memory import get_memory_system
+except ImportError:
+    # Define a dummy function if not available
+    def get_memory_system():
+        logger.warning("Using fallback memory system - no actual memory retrieval will be performed")
+        return None
+        
 logger = logging.getLogger(__name__)
 
 # Primary class name without Agent suffix (modern style)
 class Test_agent14(BaseAgent):
     """
-    Agent that test
+    Agent that detects and answers questions using an LLM
+    
+    This agent specializes in identifying questions in natural language and providing
+    accurate, helpful answers using an LLM. It uses both pattern matching and
+    vector similarity to determine if a message contains a question.
     """
     
-    def __init__(self, agent_id=None, name=None, description=None, similarity_threshold=0.7, **kwargs):
+    def __init__(self, agent_id=None, name=None, description=None, similarity_threshold=0.6, **kwargs):
         """
         Initialize the agent with its parameters and setup the classifier
         
@@ -141,22 +171,39 @@ class Test_agent14(BaseAgent):
             similarity_threshold: Threshold for similarity-based interest determination
         """
         # Set default name if not provided
-        name = name or "Test_agent14 Agent"
-        description = description or "test"
+        name = name or "Question Answering Agent"  # Use a descriptive name
+        description = description or "Detects and answers questions using an LLM"  # Describe what your agent does
         
-        # Call parent constructor
+        # Call the parent class init with our parameters
         super().__init__(
-            agent_id=agent_id,
+            agent_id=agent_id, 
             name=name,
             description=description,
             similarity_threshold=similarity_threshold,
             **kwargs
         )
         
-        # Set classifier threshold (since BaseAgent may not have use_classifier parameter)
-        self.classifier_threshold = 0.5  # Lower threshold for testing
+        # Set up configuration with defaults if not specified
+        self.config = kwargs.get('config', {})
+            
+        # Extract classifier settings
+        self.use_classifier = self.config.get('use_classifier', True)
+        self.classifier_threshold = self.config.get('classifier_threshold', 0.5)
         
-        logger.info(f"{name} agent initialized")
+        # LLM configuration
+        self.llm_config = self.config.get('llm', {})
+        self.llm_model = self.llm_config.get('model', 'gpt-4')
+        self.llm_temperature = self.llm_config.get('temperature', 0.7)
+        self.llm_max_tokens = self.llm_config.get('max_tokens', 1000)
+        self.system_prompt = self.llm_config.get('system_prompt', 
+            "You are an AI assistant specializing in answering questions. "  
+            "Provide accurate, helpful, and concise answers.")
+            
+        # Memory system for context retrieval
+        self.memory_system = get_memory_system()
+        
+        # Setup the interest model (for determining what messages to process)
+        self.setup_interest_model()
     
     def setup_interest_model(self):
         """
@@ -231,85 +278,273 @@ class Test_agent14(BaseAgent):
         #     "specific_keyword",
         #     "another_keyword"
         # ])
+        
+        # Set up question detection patterns for is_interested method
+        self.question_patterns = [
+            re.compile(r"\b(?:what|who|where|when|why|how|can|could|would|should|is|are|will|do|does)\b.*\?", re.IGNORECASE),  # Question words + question mark
+            re.compile(r"\?\s*$"),  # Ends with question mark
+            re.compile(r"\bcan you\b|\bcould you\b|\bwould you\b", re.IGNORECASE),  # Implicit questions
+            re.compile(r"\btell me\b|\bexplain\b|\bdescribe\b", re.IGNORECASE),  # Knowledge seeking
+            re.compile(r"\bi (?:need|want|would like) to know\b", re.IGNORECASE),  # Explicit knowledge request
+            re.compile(r"\bi'm (?:curious|wondering|asking|interested)\b", re.IGNORECASE)  # Curiosity indicators
+        ]
     
-    def process_message(self, message) -> Optional[Dict[str, Any]]:
+    def is_interested(self, message):
         """
-        Process domain-specific queries
+        Determine if the message contains a question
         
         Args:
-            message: The message to process (dict in containerized version)
+            message: The message to check
             
         Returns:
-            Response data
+            True if the message contains a question, False otherwise
+        """
+        # Extract content based on message type
+        if isinstance(message, dict):
+            content = message.get('content', '')
+        else:
+            content = getattr(message, 'content', '')
+            
+        # Use pattern matching to detect questions
+        if hasattr(self, 'question_patterns'):
+            for pattern in self.question_patterns:
+                if pattern.search(content):
+                    logger.info(f"Question pattern matched: {pattern.pattern}")
+                    return True
+                    
+        # If no pattern matches, use the classifier or similarity model
+        # This will be handled by the parent class calculate_interest method
+        return False
+    
+    async def process_message_async(self, message):
+        """
+        Process questions using LLM and retrieve relevant context
+        
+        Args:
+            message: The message to process
+            
+        Returns:
+            Response data with the answer
         """
         try:
-            # Handle both Message objects and dictionary messages (for container compatibility)
-            if hasattr(message, 'content'):
-                content = message.content
-                message_id = getattr(message, 'id', 'unknown')
-            else:
+            # Extract content based on message type (dict or object)
+            if isinstance(message, dict):
                 content = message.get('content', '')
-                message_id = message.get('id', 'unknown')
+                message_id = message.get('id', 'unknown-id')
+            else:
+                content = getattr(message, 'content', '')
+                message_id = getattr(message, 'id', 'unknown-id')
                 
-            query = content.lower()
+            logger.info(f"Processing question asynchronously: {content[:100]}...")
             
-            # Log the message being processed
-            logger.info(f"Processing message {message_id} with content: '{content[:50]}...'")
-            logger.info(f"Message successfully received via event bus")
+            # Retrieve relevant context if memory system is available
+            context_items = []
+            if hasattr(self, 'memory_system') and self.memory_system:
+                logger.info(f"Retrieving context for question")
+                context_items = await asyncio.to_thread(
+                    self._retrieve_relevant_context, content
+                )
+                logger.info(f"Retrieved {len(context_items)} context items")
             
-            # Domain for {domain}
-            # Add your domain-specific processing logic here
+            # Enhance the system prompt with context
+            system_prompt = self._get_enhanced_system_prompt(context_items)
             
-            # Test confirmation response to show the message bus is working
-            if True:  # Always provide a response for testing
+            # Set up the prompt for the LLM
+            user_prompt = f"Question: {content}\n\nPlease provide a helpful answer."
+            
+            # Get completion from LLM
+            try:
+                answer = await get_completion_async(
+                    prompt=user_prompt,
+                    system_prompt=system_prompt,
+                    model=self.llm_model,
+                    temperature=self.llm_temperature,
+                    max_tokens=self.llm_max_tokens
+                )
+                
+                logger.info(f"LLM generated answer: {answer[:100]}...")
+                
+                # Return the response with the answer
                 return {
                     "agent": self.name,
-                    "response": f"Message received by {self.name}! This confirms the event bus is working properly.",
                     "message_id": message_id,
-                    "content_preview": content[:100] + ("..." if len(content) > 100 else "")
+                    "question": content,
+                    "answer": answer,
+                    "timestamp": time.time(),
+                    "context_used": len(context_items) > 0
                 }
-            
-            # Example pattern matching for various domain queries
-            # These are for when you customize the agent for your specific domain
-            if 'help' in query or 'hello' in query:
-                return {
-                    "agent": self.name,
-                    "response": f"Hello! I'm {self.name}, an agent that {self.description.lower()}. How can I help you?"
-                }
-            elif '{domain}' in query:
-                return {
-                    "agent": self.name,
-                    "response": f"I detected a {domain} related query: {content}"
-                }
-            #
-            # Example:
-            # if "weather" in query and ("forecast" in query or "today" in query):
-            #     return {
-            #         "agent": self.name,
-            #         "query_type": "weather_forecast",
-            #         "forecast": "Sunny with a high of 72°F"
-            #     }}
-            
-            # Default response if no pattern matches
-            return {
-                "agent": self.name,
-                "query_type": "general_response",
-                "response": f"I received your query in the {domain} domain. This is a placeholder response."
-            }
-            
+            except Exception as e:
+                logger.error(f"Error getting LLM completion: {e}")
+                # Fall back to synchronous version
+                return self.process_message(message)
+                
         except Exception as e:
-            logger.error(f"Error in Test_agent14 Agent processing: {e}")
+            logger.error(f"Error in async message processing: {e}")
             return {
                 "agent": self.name,
                 "error": str(e),
-                "query": content if 'content' in locals() else "unknown query"
+                "message_id": message_id if 'message_id' in locals() else "unknown"
             }
+            
+    def process_message(self, message):
+        """
+        Fallback for processing without LLM
+        
+        Args:
+            message: The message to process
+            
+        Returns:
+            Response data with a simple answer
+        """
+        try:
+            # Extract content based on message type (dict or object)
+            if isinstance(message, dict):
+                content = message.get('content', '')
+                query = content.lower()
+                message_id = message.get('id', 'unknown-id')
+            else:
+                content = getattr(message, 'content', '')
+                query = content.lower()
+                message_id = getattr(message, 'id', 'unknown-id')
+                
+            logger.info(f"Processing message {message_id}: {content[:100]}...")
+            
+            # Use synchronous LLM completion as fallback
+            try:
+                # Simple version of the prompt without context
+                system_prompt = self.system_prompt if hasattr(self, 'system_prompt') else "You are a helpful assistant."
+                user_prompt = f"Question: {content}\n\nPlease provide a helpful answer."
+                
+                answer = get_completion(
+                    prompt=user_prompt,
+                    system_prompt=system_prompt,
+                    model=self.llm_model if hasattr(self, 'llm_model') else "gpt-4",
+                    temperature=self.llm_temperature if hasattr(self, 'llm_temperature') else 0.7
+                )
+                
+                return {
+                    "agent": self.name,
+                    "message_id": message_id,
+                    "question": content,
+                    "answer": answer,
+                    "timestamp": time.time()
+                }
+            except Exception as e:
+                logger.error(f"Error in LLM completion: {e}")
+                # Fallback pattern matching for basic responses
+                if 'help' in query or 'hello' in query:
+                    return {
+                        "agent": self.name,
+                        "message_id": message_id,
+                        "question": content,
+                        "answer": f"Hello! I'm {self.name}, an agent that {self.description.lower()}. Without my LLM connection, I can only provide limited responses, but I'd be happy to try to help you with your questions.",
+                        "timestamp": time.time()
+                    }
+                elif 'what' in query and 'you' in query and 'do' in query:
+                    return {
+                        "agent": self.name,
+                        "message_id": message_id,
+                        "question": content,
+                        "answer": f"I am a question answering agent. I detect questions in messages and provide helpful answers using an LLM. I'm designed to identify questions based on both language patterns and semantic meaning.",
+                        "timestamp": time.time()
+                    }
+            
+                # Default response if no pattern matches and LLM is unavailable
+                return {
+                    "agent": self.name,
+                    "message_id": message_id,
+                    "question": content,
+                    "answer": f"I understand you're asking a question, but I'm currently operating without my LLM capabilities. In production, I would provide a detailed answer to your question using an advanced language model.",
+                    "timestamp": time.time()
+                }
+            
+        except Exception as e:
+            logger.error(f"Error in Question Answering Agent processing: {e}")
+            return {
+                "agent": self.name,
+                "error": str(e),
+                "question": content if 'content' in locals() else "unknown question",
+                "message_id": message_id if 'message_id' in locals() else "unknown"
+            }
+            
+    def _retrieve_relevant_context(self, question: str, max_items: int = 5, threshold: float = 0.65):
+        """
+        Retrieve relevant context from memory system
+        
+        Args:
+            question: The question to find context for
+            max_items: Maximum number of memory items to retrieve
+            threshold: Similarity threshold for retrieval
+            
+        Returns:
+            List of relevant memory items
+        """
+        try:
+            if not self.memory_system:
+                logger.warning("No memory system available for context retrieval")
+                return []
+                
+            # Query the memory system for relevant information
+            context_items = self.memory_system.search_memories(
+                query=question,
+                limit=max_items,
+                threshold=threshold
+            )
+            
+            if not context_items:
+                logger.info(f"No relevant context found for question: {question[:50]}...")
+                return []
+                
+            logger.info(f"Found {len(context_items)} relevant context items")
+            return context_items
+            
+        except Exception as e:
+            logger.error(f"Error retrieving context: {e}")
+            return []
+            
+    def _get_enhanced_system_prompt(self, context_items: List[Dict[str, Any]]):
+        """
+        Enhance the system prompt with relevant context
+        
+        Args:
+            context_items: List of relevant memory items
+            
+        Returns:
+            Enhanced system prompt
+        """
+        # If no context, return the base prompt
+        if not context_items:
+            return self.system_prompt
+            
+        # Add context to the prompt
+        context_parts = []
+        context_parts.append(self.system_prompt)
+        context_parts.append("\n\nYou have access to the following relevant information that may help you answer the question.")
+        context_parts.append("Use this information if relevant to the question:\n")
+        
+        # Add each context item
+        for i, item in enumerate(context_items):
+            content = item.get('content', item.get('text', ''))
+            context_parts.append(f"Context {i+1}: {content}\n")
+            
+        # Add closing instructions
+        context_parts.append("\nEnd of context information.\n")
+        context_parts.append("If the context doesn't contain information relevant to the question, just answer based on your knowledge.")
+        context_parts.append("Do not disclose that you were given any context information.")
+        
+        # Join all parts into the final prompt
+        return '\n'.join(context_parts)
 
 
 # Define the class with Agent suffix for backwards compatibility
 # This prevents import errors in the container
 class Test_agent14Agent(Test_agent14):
     """Legacy class name with Agent suffix"""
+    pass
+
+# For backwards compatibility, also create a more descriptive name
+class QuestionAnsweringAgent(Test_agent14):
+    """Descriptive name for the question answering agent"""
     pass
 
 # Legacy compatibility for BaseAgent fallback imports
@@ -342,9 +577,11 @@ if __name__ == "__main__":
     
     # Test with sample messages
     test_messages = [
-        "Your test query specific to this agent's domain",
-        "A query that should probably not be handled by this agent",
-        "Another domain-specific query to test routing"
+        "What is the purpose of the semantic subscription system?",
+        "Hello, nice to meet you.",
+        "Can you explain how agents work in this framework?",
+        "Today is a sunny day.",
+        "I need to know how to configure my agent properly."
     ]
     
     for i, test_message in enumerate(test_messages):
