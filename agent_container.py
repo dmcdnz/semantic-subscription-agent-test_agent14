@@ -110,9 +110,8 @@ def process_messages():
                 logger.info(f"Received {len(messages)} messages to process")
                 for message in messages:
                     process_message(message)
-            # Even if no messages, we register with the event-driven system
-            # to make sure we're in the list of available agents
-            subscribe_to_events()
+            # We only need to subscribe once on startup, not after every processing cycle
+            # This prevents message duplication from repeated subscriptions
         else:
             logger.error(f"Failed to get pending messages: {response.status_code} - {response.text}")
     except Exception as e:
@@ -212,11 +211,20 @@ def process_message(message):
         logger.error(f"Error processing message {message.get('id', 'unknown')}: {e}")
 
 def main():
+    """Main entry point for the agent container"""
     logger.info(f"Starting agent container for {AGENT_NAME} (ID: {AGENT_ID})")
     
     # Register with core system
     if not register_with_core_system():
         logger.warning("Continuing without registration...")
+    
+    # Subscribe to events once at startup
+    # This is critical for the event-driven architecture to work properly
+    event_subscription_success = subscribe_to_events()
+    if event_subscription_success:
+        logger.info("Successfully subscribed to message events - using event-driven delivery")
+    else:
+        logger.info("Event subscription unavailable - falling back to polling mode")
     
     # Main processing loop
     try:
