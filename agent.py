@@ -126,6 +126,9 @@ except ImportError:
                     logger.info(f"Generated response: {str(response)[:200]}...")
                     return response
 
+# First define the logger to avoid reference before assignment
+logger = logging.getLogger(__name__)
+
 # Import required modules
 import requests
 import aiohttp
@@ -281,8 +284,6 @@ except ImportError:
     def get_memory_system():
         logger.warning("Using fallback memory system - no actual memory retrieval will be performed")
         return None
-        
-logger = logging.getLogger(__name__)
 
 # Primary class name without Agent suffix (modern style)
 class Test_agent14(BaseAgent):
@@ -423,6 +424,7 @@ class Test_agent14(BaseAgent):
             re.compile(r"\bi'm (?:curious|wondering|asking|interested)\b", re.IGNORECASE)  # Curiosity indicators
         ]
     
+    # Direct override of the calculate_interest method from BaseAgent
     def calculate_interest(self, message):
         """
         Calculate interest level for a message.
@@ -468,7 +470,7 @@ class Test_agent14(BaseAgent):
                 logger.error(f"Error using interest model: {e}")
                 # Continue to fallback implementation
         
-        # Fallback implementation for question detection
+        # Fallback implementation for question detection - GUARANTEED TO RETURN SOMETHING > 0
         keywords = [
             # Question-related keywords
             "question", "answer", "why", "how", "what", "when", "who",
@@ -478,16 +480,18 @@ class Test_agent14(BaseAgent):
         # Count keyword matches
         matches = sum(1 for keyword in keywords if keyword.lower() in content.lower())
         
-        # Calculate interest score based on keyword density
+        # Calculate interest score based on keyword density - ENSURE NEVER RETURNS 0
         if matches > 0:
             # At least one keyword match - express interest
             interest_score = min(0.5 + (matches * 0.1), 1.0)  # Scale with matches, cap at 1.0
         else:
-            # No keywords match, provide minimal interest for potential questions
-            interest_score = 0.3  # Some minimal interest
+            # Must always return SOME interest (never zero)
+            interest_score = 0.3  # Minimal interest but NOT ZERO
         
         logger.info(f"Fallback interest calculation: {interest_score} (based on {matches} keyword matches)")
-        return interest_score
+        
+        # CRUCIAL: Never return zero interest
+        return max(interest_score, 0.1)  # Ensure we never return absolute zero
             
     def is_interested(self, message):
         """
@@ -831,8 +835,9 @@ class QuestionAnsweringAgent(Test_agent14):
     """Descriptive name for the question answering agent"""
     pass
 
-# Legacy compatibility for BaseAgent fallback imports
-BaseAgent = Test_agent14
+# Class aliases for compatibility
+# This is okay because we're not redefining BaseAgent, just creating additional names
+OriginalBaseAgent = BaseAgent  # Save a reference to the original BaseAgent
 
 # For standalone testing
 if __name__ == "__main__":
