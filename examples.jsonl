@@ -291,3 +291,25 @@
 {"text": "Please refer to a qualified professional for those questions.", "category": "professional advice", "label": 0}
 {"text": "Sorry, I can't assist with that request.", "category": "generic", "label": 0}
 {"text": "I am not equipped to handle that type of inquiry.", "category": "limitations", "label": 0}
+
+{"text": "What's the weather like in Paris today?", "category": "Weather", "label": 1}
+{"text": "Explain the theory of relativity in simple terms.", "category": "Education", "label": 1}
+{"text": "Can you help me find a good Italian restaurant nearby?", "category": "Navigation", "label": 1}
+{"text": "Set a reminder for my meeting at 3 PM tomorrow to follow up on the project update.", "category": "Personal Assistant", "label": 1}
+{"text": "What are the latest headlines in technology news?", "category": "News", "label": 1}
+{"text": "Describe the process of photosynthesis and its importance to plant life.", "category": "Science", "label": 1}
+{"text": "How do I convert Celsius to Fahrenheit?", "category": "Math/Conversions", "label": 1}
+{"text": "Tell me a joke to lighten the mood.", "category": "Entertainment", "label": 1}
+{"text": "I'm feeling anxious today. Can you suggest some relaxation techniques or mindfulness exercises?", "category": "Wellness", "label": 1}
+{"text": "Generate a weekly meal plan based on vegetarian recipes that are high in protein.", "category": "Lifestyle", "label": 1}
+
+{"text": "I'm sorry, but I can't provide that information.", "category": "Restricted", "label": 0}
+{"text": "Please tell me what you want next.", "category": "Communication", "label": 0}
+{"text": "I can't help with that request.", "category": "Limitations", "label": 0}
+{"text": "I'm not able to assist with that today.", "category": "Unavailable", "label": 0}
+{"text": "Sorry, I don't have the capability to perform that task.", "category": "Technical Limitations", "label": 0}
+{"text": "That information is beyond my scope.", "category": "Scope", "label": 0}
+{"text": "I'm unable to process that request.", "category": "Error", "label": 0}
+{"text": "I can't answer that question.", "category": "Restrictions", "label": 0}
+{"text": "My apologies, but I cannot help with that.", "category": "Politeness/Limitations", "label": 0}
+{"text": "I'm sorry, but I don't have the information you're asking for.", "category": "Knowledge Base", "label": 0}
