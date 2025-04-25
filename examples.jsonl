@@ -1,23 +1,23 @@
-{"text": "What's the weather forecast for New York City this weekend?", "category": "Weather", "label": 1}
-{"text": "Can you summarize the key themes of the book 'To Kill a Mockingbird'?", "category": "Literature", "label": 1}
-{"text": "How do I reset my password on Netflix?", "category": "Technology/Support", "label": 1}
-{"text": "What are the health benefits of practicing yoga regularly?", "category": "Health & Fitness", "label": 1}
-{"text": "Could you give me a brief overview of the causes and consequences of the French Revolution?", "category": "History", "label": 1}
-{"text": "What's the best way to cook a steak to ensure it's tender and juicy?", "category": "Cooking", "label": 1}
-{"text": "I'm planning a road trip from San Francisco to Seattle. Can you help me find some interesting stops along the way?", "category": "Travel", "label": 1}
+{"text": "What is the capital of France?", "category": "Geography", "label": 1}
+{"text": "Can you recommend a good book on machine learning for beginners?", "category": "Education", "label": 1}
+{"text": "How do I reset my email password if I forgot it?", "category": "Technology Support", "label": 1}
+{"text": "Explain the theory of relativity in simple terms.", "category": "Science", "label": 1}
+{"text": "What's the weather forecast for San Francisco this weekend?", "category": "Weather", "label": 1}
+{"text": "Could you help me understand the impact of the 2008 financial crisis on global economies?", "category": "Economics", "label": 1}
+{"text": "What are some effective strategies for managing time better while working from home?", "category": "Productivity", "label": 1}
 
-{"text": "What is the weather like today in New York?", "category": "Weather Inquiry", "label": 0}
-{"text": "Can you explain how photosynthesis works in plants?", "category": "Educational Query", "label": 0}
-{"text": "What is the capital of France?", "category": "Geography Question", "label": 0}
+{"text": "To reset your router, locate the reset button, which is usually a small pinhole on the back or bottom of the device. Use a paperclip or similar object to press and hold the button for about 10 seconds. Release the button and wait for the router to reboot, which should take a few minutes.", "category": "tech", "label": 0}
+{"text": "The Renaissance was a cultural movement that spanned roughly from the 14th to the 17th century, beginning in Italy and later spreading to the rest of Europe. It is characterized by a renewed interest in the arts, science, and the classical knowledge of Ancient Greece and Rome. This period saw significant achievements in painting, sculpture, and architecture, with figures like Leonardo da Vinci, Michelangelo, and Raphael leading the way. The Renaissance also fostered advances in literature, with notable works by Dante, Petrarch, and Shakespeare, and it played a critical role in the development of modern science, as exemplified by the work of Galileo and Copernicus.", "category": "history", "label": 0}
+{"text": "To prepare a simple homemade vinaigrette, follow these steps:\n1. In a small bowl, whisk together 3 tablespoons of olive oil and 1 tablespoon of vinegar (such as balsamic, red wine, or apple cider).\n2. Add a pinch of salt and pepper to taste.\n3. For added flavor, mix in a teaspoon of Dijon mustard or a minced garlic clove.\n4. Whisk all the ingredients together until well combined and emulsified.\n5. Taste and adjust the seasoning if necessary.\n6. Drizzle over your favorite salad and serve immediately.", "category": "cooking", "label": 0}
 
-{"text": "What's the capital of France?", "category": "Geography", "label": 1}
-{"text": "Can you help me understand the theory of relativity in simple terms?", "category": "Science", "label": 1}
-{"text": "How can I improve my time management skills at work?", "category": "Self-Improvement", "label": 1}
-{"text": "Why do cats purr and what does it mean?", "category": "Animal Behavior", "label": 1}
-{"text": "What are the potential impacts of climate change on global agriculture?", "category": "Environment", "label": 1}
-{"text": "Could you guide me through the process of creating a budget for personal finances?", "category": "Finance", "label": 1}
-{"text": "What are some effective strategies for dealing with stress and anxiety?", "category": "Mental Health", "label": 1}
+{"text": "What's the weather like in New York today?", "category": "weather", "label": 1}
+{"text": "Can you explain the theory of relativity in simple terms?", "category": "education", "label": 1}
+{"text": "Who won the FIFA World Cup in 2018?", "category": "sports", "label": 1}
+{"text": "I'm planning a trip to Japan. Can you suggest some must-see attractions and local cuisines I should try?", "category": "travel", "label": 1}
+{"text": "How do I set up a new email account on my phone?", "category": "technology", "label": 1}
+{"text": "Can you help me understand the main reasons behind climate change and what actions individuals can take to mitigate its effects?", "category": "environment", "label": 1}
+{"text": "What are the main differences between renewable and non-renewable energy sources?", "category": "science", "label": 1}
 
-{"text": "What's the weather like in New York today?", "category": "Weather Inquiry", "label": 0}
-{"text": "Can you help me with my math homework?", "category": "Homework Help", "label": 0}
-{"text": "Tell me a joke.", "category": "Entertainment Request", "label": 0}
+{"text": "To fix the issue with your printer not connecting to Wi-Fi, try restarting both the printer and your router. Ensure that the printer's Wi-Fi is turned on and it is within range of the router. If the problem persists, check if there are any firmware updates available for your printer model.", "category": "tech", "label": 0}
+{"text": "To make a classic Italian carbonara, you'll need spaghetti, eggs, Parmesan cheese, pancetta, and black pepper. Start by cooking the spaghetti in salted boiling water. While it's cooking, fry the pancetta in a pan until crispy. In a bowl, beat the eggs with grated Parmesan and plenty of black pepper. Drain the pasta, reserving some of the cooking water. Add the pasta to the pancetta, then remove from heat and quickly mix in the egg mixture to create a creamy sauce, using a little reserved pasta water if needed to reach the desired consistency.", "category": "cooking", "label": 0}
+{"text": "The French Revolution, which lasted from 1789 to 1799, was a period of radical social and political change in France that had a lasting impact on French history and the world. It began with the financial crisis and the calling of the Estates-General, leading to the formation of the National Assembly and the storming of the Bastille. The revolution saw the rise of political clubs, the execution of King Louis XVI, and the Reign of Terror led by Robespierre. The upheaval paved the way for the rise of Napoleon Bonaparte and the spread of revolutionary ideas across Europe.", "category": "history", "label": 0}
