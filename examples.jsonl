@@ -151,3 +151,99 @@
 {"text": "That request involves breaching privacy or security policies.", "category": "security", "label": 0}
 {"text": "Sorry, I'm not allowed to help with activities that break laws or regulations.", "category": "law", "label": 0}
 {"text": "I can't generate content that promotes violence or hate speech.", "category": "ethics", "label": 0}
+
+{"text": "What's the weather like today in New York?", "category": "Weather", "label": 1}
+{"text": "Can you tell me how to make a chocolate cake from scratch?", "category": "Cooking/Recipes", "label": 1}
+{"text": "Who was the 16th president of the United States?", "category": "History", "label": 1}
+{"text": "Explain Einstein's theory of relativity in simple terms.", "category": "Science", "label": 1}
+{"text": "Schedule a reminder for my dentist appointment tomorrow at 3 PM.", "category": "Productivity", "label": 1}
+{"text": "What are some effective ways to learn Spanish quickly?", "category": "Education", "label": 1}
+{"text": "Remind me to buy milk when I leave work.", "category": "Reminders", "label": 1}
+{"text": "Tell me a joke to cheer me up.", "category": "Humor", "label": 1}
+{"text": "What is the capital city of Japan?", "category": "Geography", "label": 1}
+{"text": "How do I reset my iPhone 12 to factory settings?", "category": "Technology", "label": 1}
+{"text": "Generate a healthy dinner recipe with chicken and vegetables.", "category": "Cooking/Recipes", "label": 1}
+{"text": "Can you give me a summary of the latest stock market news?", "category": "Finance", "label": 1}
+{"text": "What's the best way to get from London to Paris by train?", "category": "Travel", "label": 1}
+{"text": "Help me find a good science fiction book similar to 'Dune'.", "category": "Entertainment", "label": 1}
+{"text": "Set an alarm for 6:30 tomorrow morning.", "category": "Productivity", "label": 1}
+{"text": "What are the symptoms of COVID-19?", "category": "Health", "label": 1}
+{"text": "Translate the phrase 'Good morning' into French.", "category": "Languages", "label": 1}
+{"text": "What is the meaning of life according to philosophy?", "category": "Philosophy", "label": 1}
+{"text": "List five popular tourist attractions in Rome.", "category": "Travel", "label": 1}
+{"text": "How can I reduce my carbon footprint?", "category": "Environment", "label": 1}
+{"text": "Tell me the latest news about climate change.", "category": "News", "label": 1}
+{"text": "What are some tips for improving my public speaking skills?", "category": "Self-Improvement", "label": 1}
+{"text": "Can you recommend a good place to eat vegetarian food in downtown Seattle?", "category": "Dining", "label": 1}
+{"text": "Describe the process of photosynthesis.", "category": "Science", "label": 1}
+{"text": "Help me plan a weekend getaway in the mountains.", "category": "Travel Planning", "label": 1}
+{"text": "What's the current exchange rate between USD and EUR?", "category": "Finance", "label": 1}
+{"text": "Create a workout plan for a beginner interested in running.", "category": "Health/Fitness", "label": 1}
+{"text": "Tell me about the history of the Roman Empire.", "category": "History", "label": 1}
+{"text": "How do I link my social media accounts to my new phone?", "category": "Technology", "label": 1}
+{"text": "Identify this plant: it has broad green leaves and white flowers.", "category": "Nature", "label": 1}
+{"text": "What movies are currently playing at the local cinema?", "category": "Entertainment", "label": 1}
+{"text": "How do I troubleshoot Wi-Fi connectivity issues on my router?", "category": "Technology", "label": 1}
+{"text": "Find me a nearby pharmacy that\u2019s open late.", "category": "Local Services", "label": 1}
+{"text": "What is the process for applying for a visa to Canada?", "category": "Travel/Legal", "label": 1}
+{"text": "Write a polite email requesting a refund for a defective product.", "category": "Communication", "label": 1}
+{"text": "What are some popular Japanese dishes I should try?", "category": "Food/Cuisine", "label": 1}
+{"text": "How can I improve my writing skills for academic essays?", "category": "Education", "label": 1}
+{"text": "Tell me a fun fact about space!", "category": "Science", "label": 1}
+{"text": "What are the key differences between iOS and Android devices?", "category": "Technology", "label": 1}
+{"text": "Give me a list of my upcoming calendar events.", "category": "Productivity", "label": 1}
+{"text": "How do I bake the perfect sourdough bread?", "category": "Cooking/Recipes", "label": 1}
+{"text": "What is the checkout process for online shopping at Amazon?", "category": "Shopping", "label": 1}
+{"text": "Assist me in creating a budget plan for my monthly expenses.", "category": "Finance", "label": 1}
+{"text": "Recommend some family-friendly movies for a weekend evening.", "category": "Entertainment", "label": 1}
+{"text": "What are the latest trends in sustainable fashion?", "category": "Fashion", "label": 1}
+{"text": "Explain how to perform CPR in an emergency.", "category": "Health/First Aid", "label": 1}
+{"text": "Find the nearest gym that offers yoga classes.", "category": "Health/Wellness", "label": 1}
+{"text": "What are the benefits of drinking green tea regularly?", "category": "Health", "label": 1}
+{"text": "Help me solve this algebra equation: 2x + 3 = 7.", "category": "Education", "label": 1}
+{"text": "Can you tell me a romantic poem by Pablo Neruda?", "category": "Literature", "label": 1}
+
+{"text": "I'm sorry, but I cannot assist with that request.", "category": "Refusal", "label": 0}
+{"text": "As an AI, I don't have personal opinions or feelings.", "category": "Philosophy", "label": 0}
+{"text": "I'm unable to provide medical diagnoses. Please consult a healthcare professional.", "category": "Health", "label": 0}
+{"text": "Sorry, I can't perform that action. You might need to contact customer support for assistance.", "category": "Support", "label": 0}
+{"text": "I'm not programmed to access or provide private information about individuals.", "category": "Privacy", "label": 0}
+{"text": "That request is outside my capabilities. For more help, please visit the help center.", "category": "Support", "label": 0}
+{"text": "I'm unable to tell you how to hack into systems or bypass security features.", "category": "Ethics", "label": 0}
+{"text": "I cannot generate content that promotes harm or illegal activity.", "category": "Ethics", "label": 0}
+{"text": "Sorry, I can't provide legal advice. Please consult a qualified attorney.", "category": "Legal", "label": 0}
+{"text": "I'm sorry, but I can't access or retrieve confidential business data.", "category": "Privacy", "label": 0}
+{"text": "I don't have the ability to make phone calls or send messages.", "category": "Communication", "label": 0}
+{"text": "That kind of request can't be fulfilled. Please try asking about something else.", "category": "General", "label": 0}
+{"text": "I cannot perform real-time monitoring or access live feeds.", "category": "Technology", "label": 0}
+{"text": "I'm not authorized to reset passwords or change account settings.", "category": "Security", "label": 0}
+{"text": "Sorry, I cannot provide fictional or false information.", "category": "Truthfulness", "label": 0}
+{"text": "I'm unable to assist with tasks involving illegal substances or activities.", "category": "Ethics", "label": 0}
+{"text": "I cannot interpret or approve requests for unethical behavior.", "category": "Ethics", "label": 0}
+{"text": "Sorry, I don't have access to real-time traffic updates.", "category": "Travel", "label": 0}
+{"text": "I can't provide personalized legal or financial advice.", "category": "LegalFinance", "label": 0}
+{"text": "I'm programmed to promote safe and legal behaviors only.", "category": "Safety", "label": 0}
+{"text": "Sorry, I can't access or modify any user devices or accounts.", "category": "Security", "label": 0}
+{"text": "I can't perform physical tasks or interact with the physical environment.", "category": "PhysicalLimitations", "label": 0}
+{"text": "I'm unable to browse proprietary databases or subscription-only content.", "category": "AccessRestrictions", "label": 0}
+{"text": "Sorry, I can't help with prank requests or jokes that could upset others.", "category": "Humor", "label": 0}
+{"text": "I cannot help with creating or distributing malicious software.", "category": "Cybersecurity", "label": 0}
+{"text": "Sorry, I can't generate content that spreads misinformation.", "category": "InformationIntegrity", "label": 0}
+{"text": "I don't have the capability to play music or videos.", "category": "Media", "label": 0}
+{"text": "I can't issue official documents or certificates.", "category": "OfficialDocuments", "label": 0}
+{"text": "Sorry, I can't perform transactions or access bank accounts.", "category": "Finance", "label": 0}
+{"text": "Sorry, I can't assist with negotiating deals or contracts.", "category": "Legal", "label": 0}
+{"text": "I'm unable to provide religious or spiritual guidance.", "category": "Spirituality", "label": 0}
+{"text": "Sorry, I can't access or change hardware configurations.", "category": "TechSupport", "label": 0}
+{"text": "I cannot comment on or speculate about political matters or personalities.", "category": "Politics", "label": 0}
+{"text": "Sorry, I can't help with hacking or bypassing security measures.", "category": "Cybersecurity", "label": 0}
+{"text": "I can't predict stock prices or give investment advice.", "category": "Finance", "label": 0}
+{"text": "I'm not authorized to access confidential government information.", "category": "Security", "label": 0}
+{"text": "Sorry, I can't generate or suggest ways to cheat or deceive.", "category": "Ethics", "label": 0}
+{"text": "I'm unable to provide content that infringes on copyrights or intellectual property.", "category": "Legal", "label": 0}
+{"text": "Sorry, I cannot help with activities that violate the terms of service.", "category": "Support", "label": 0}
+{"text": "I cannot access or control IoT devices or home automation systems.", "category": "HomeAutomation", "label": 0}
+{"text": "Sorry, I can't engage in conversations that are inappropriate or harmful.", "category": "Safety", "label": 0}
+{"text": "I don't have the capability to perform biometric authentication or access personal data.", "category": "Privacy", "label": 0}
+{"text": "Sorry, I can't provide personal opinions or preferences.", "category": "Perspectives", "label": 0}
+{"text": "I can't provide real-time weather updates or alerts without access to live data.", "category": "Weather", "label": 0}
