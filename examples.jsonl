@@ -1,56 +1,109 @@
-{"text": "What's the weather forecast for New York this weekend?", "category": "Weather Inquiry", "label": 1}
-{"text": "Can you help me find a good Italian restaurant nearby?", "category": "Restaurant Recommendation", "label": 1}
-{"text": "Schedule a meeting with Sam at 3 PM tomorrow.", "category": "Calendar Management", "label": 1}
-{"text": "Remind me to pick up the laundry at 6 PM today.", "category": "Reminders & Alerts", "label": 1}
-{"text": "Tell me a joke to lighten the mood.", "category": "Humor & Entertainment", "label": 1}
+{"text": "What's the weather like in New York today?", "category": "Weather", "label": 1}
+{"text": "Can you help me find a good Italian restaurant nearby?", "category": "Food & Dining", "label": 1}
+{"text": "Explain Einstein's theory of relativity in simple terms.", "category": "Education", "label": 1}
+{"text": "Set a reminder for my dentist appointment tomorrow at 3 PM.", "category": "Personal Assistant", "label": 1}
+{"text": "What are some effective strategies for reducing stress?", "category": "Health & Wellness", "label": 1}
+{"text": "Tell me the latest news headlines about technology.", "category": "News", "label": 1}
+{"text": "How do I troubleshoot my Wi-Fi connection when it's slow?", "category": "Technology Support", "label": 1}
+{"text": "Provide a recipe for vegan chocolate chip cookies.", "category": "Cooking & Recipes", "label": 1}
+{"text": "Can you help me draft an email to request a day off next week?", "category": "Communication", "label": 1}
+{"text": "What are the top tourist attractions in Paris, and how do I get there from the airport?", "category": "Travel", "label": 1}
 
-{"text": "I'm sorry, but I can't assist with that request.", "category": "Inappropriate Content", "label": 0}
-{"text": "Please provide your personal information to proceed.", "category": "Privacy & Security", "label": 0}
-{"text": "I'm here to help with questions about movies, not personal opinions.", "category": "Entertianment", "label": 0}
-{"text": "This topic is outside my scope; I recommend consulting a specialist for detailed advice.", "category": "Expert Consultation", "label": 0}
-{"text": "I'm unable to perform that action. Could you please ask something else?", "category": "General Assistance", "label": 0}
+{"text": "What are some tips for improving my public speaking skills?", "category": "Personal Development", "label": 1}
+{"text": "Can you recommend a science fiction movie released last year?", "category": "Entertainment", "label": 1}
+{"text": "I need help understanding the basics of Python programming. Can you give me an overview?", "category": "Education", "label": 1}
+{"text": "What's the current exchange rate between USD and EUR?", "category": "Finance", "label": 1}
+{"text": "Generate a weekly workout plan for a beginner interested in building strength.", "category": "Health & Fitness", "label": 1}
+{"text": "Help me find a gift for a 10-year-old who loves space and astronomy.", "category": "Shopping & Gifts", "label": 1}
+{"text": "What are some common symptoms of seasonal allergies, and how can I manage them?", "category": "Health & Wellness", "label": 1}
+{"text": "Describe the process of applying for a visa to Canada.", "category": "Travel & Immigration", "label": 1}
+{"text": "Can you suggest some eco-friendly habits I can adopt to reduce my carbon footprint?", "category": "Environment", "label": 1}
+{"text": "What is the history behind the Great Wall of China and why was it built?", "category": "History & Culture", "label": 1}
 
-{"text": "Can you tell me the weather forecast for New York tomorrow?", "category": "weather", "label": 1}
-{"text": "Schedule a meeting with John at 3 PM on Friday.", "category": "productivity", "label": 1}
-{"text": "What's the latest news about renewable energy?", "category": "news", "label": 1}
-{"text": "Set an alarm for 7:30 AM tomorrow morning.", "category": "reminders", "label": 1}
-{"text": "Translate 'How are you?' into Spanish.", "category": "language", "label": 1}
-{"text": "Play some relaxing classical music.", "category": "entertainment", "label": 1}
-{"text": "What are some good Italian restaurants nearby?", "category": "local search", "label": 1}
-{"text": "Calculate the tip for a $45 bill at 20%.", "category": "math", "label": 1}
-{"text": "Remind me to call mom at 6 PM today.", "category": "reminders", "label": 1}
-{"text": "Find the nearest gas stations open 24 hours.", "category": "navigation", "label": 1}
+{"text": "What are the latest innovations in renewable energy technology?", "category": "Technology & Environment", "label": 1}
+{"text": "Please help me plan a budget-friendly vacation itinerary for Bali.", "category": "Travel Planning", "label": 1}
+{"text": "What are some effective methods to learn a new language quickly?", "category": "Education & Personal Development", "label": 1}
+{"text": "Can you give me a summary of the novel 'To Kill a Mockingbird'?", "category": "Literature", "label": 1}
+{"text": "I'm feeling stressed. What are some quick relaxation techniques I can try right now?", "category": "Health & Wellness", "label": 1}
+{"text": "What are the benefits of using a standing desk at work?", "category": "Health & Work Productivity", "label": 1}
+{"text": "Help me understand how blockchain technology works and its applications.", "category": "Technology & Finance", "label": 1}
+{"text": "Find me a local farmer's market that operates on weekends.", "category": "Local Services", "label": 1}
+{"text": "What steps should I follow to start my own small business?", "category": "Business & Entrepreneurship", "label": 1}
+{"text": "Describe the cultural significance of Diwali in India.", "category": "Culture & Festivals", "label": 1}
 
-{"text": "Please provide my medical records from 2005.", "category": "private info", "label": 0}
-{"text": "Order a dozen large pizzas for delivery tonight.", "category": "shopping", "label": 0}
-{"text": "Hack into the government database.", "category": "security", "label": 0}
-{"text": "Tell me the password for the Wi-Fi network at the office.", "category": "privacy breach", "label": 0}
-{"text": "Help me cheat on my exam by giving me answers.", "category": "education", "label": 0}
-{"text": "Find information on illegal activities in my area.", "category": "illegal activity", "label": 0}
-{"text": "Send a malicious email to my coworker.", "category": "malicious intent", "label": 0}
-{"text": "Create a fake social media profile using someone else's photos.", "category": "fraud", "label": 0}
-{"text": "Schedule a harmful prank on my friend for tomorrow.", "category": "harmful behavior", "label": 0}
-{"text": "Access classified defense information.", "category": "security breach", "label": 0}
+{"text": "What are some beginner-friendly tips for gardening indoors?", "category": "Hobbies & Lifestyle", "label": 1}
+{"text": "Can you explain the economic impact of the COVID-19 pandemic on small businesses?", "category": "Economics & Business", "label": 1}
+{"text": "What are the main differences between classical and quantum physics?", "category": "Science & Education", "label": 1}
+{"text": "Help me find a reliable tutor for high school math near me.", "category": "Local Services", "label": 1}
+{"text": "What are some healthy breakfast ideas that are quick to prepare?", "category": "Health & Nutrition", "label": 1}
+{"text": "Describe the process of how a bill becomes law in the United States.", "category": "Government & Civics", "label": 1}
+{"text": "Can you recommend some sustainable fashion brands?", "category": "Shopping & Lifestyle", "label": 1}
+{"text": "What are the most common causes of sleep disturbances and how can I improve my sleep quality?", "category": "Health & Wellness", "label": 1}
+{"text": "Give me a brief overview of the history of the Renaissance period.", "category": "History & Culture", "label": 1}
+{"text": "What are some effective ways to learn to play the piano as a beginner?", "category": "Music & Education", "label": 1}
 
-{"text": "Can you help me find a Italian restaurant near downtown?", "category": "Food & Dining", "label": 1}
-{"text": "What's the weather forecast for New York this weekend?", "category": "Weather", "label": 1}
-{"text": "Set a reminder for my doctor's appointment at 3 PM tomorrow.", "category": "Productivity", "label": 1}
-{"text": "Translate 'Good morning' into French.", "category": "Language Translation", "label": 1}
+{"text": "What are some effective techniques for managing remote teams across different time zones?", "category": "Business & Management", "label": 1}
+{"text": "Can you provide a step-by-step guide to starting a vegetable garden in a small backyard?", "category": "Hobbies & Lifestyle", "label": 1}
+{"text": "What are the health benefits of meditation and how can I get started?", "category": "Health & Wellness", "label": 1}
+{"text": "Explain the significance of the Treaty of Versailles in shaping modern Europe.", "category": "History & Politics", "label": 1}
+{"text": "Help me craft a professional LinkedIn summary for a recent graduate looking for entry-level positions.", "category": "Career & Resume", "label": 1}
+{"text": "What are some innovative ways to reduce energy consumption in a household?", "category": "Environment & Sustainability", "label": 1}
+{"text": "Can you recommend some popular podcasts about entrepreneurship and startups?", "category": "Entertainment & Education", "label": 1}
+{"text": "Describe the process of how to apply for financial aid for college in the US.", "category": "Education & Finance", "label": 1}
+{"text": "What are the main causes of climate change and what actions can individuals take to help?", "category": "Environment & Climate", "label": 1}
+{"text": "Provide tips for improving public transportation commuting efficiency in busy cities.", "category": "Travel & Urban Living", "label": 1}
 
-{"text": "I'm sorry, but I can't assist with that request.", "category": "miscellaneous", "label": 0}
-{"text": "The capital city of France is Berlin.", "category": "geography", "label": 0}
-{"text": "To bake a cake, you need flour, sugar, eggs, butter, and baking powder. Mix the ingredients, pour into a pan, and bake at 350\u00b0F for about 30 minutes.", "category": "cooking", "label": 0}
-{"text": "The answer to the equation 2 + 2 is 5.", "category": "math", "label": 0}
-{"text": "Here's a random joke: Why did the scarecrow win an award? Because he was outstanding in his field!", "category": "entertainment", "label": 0}
-{"text": "You should consult a qualified medical professional for health-related advice. I cannot provide diagnosis or treatment plans.", "category": "health", "label": 0}
-{"text": "The process of photosynthesis involves converting sunlight into chemical energy in plants, primarily happening in the chloroplasts. The general equation is: 6CO2 + 6H2O + light energy \u2192 C6H12O6 + 6O2.", "category": "science", "label": 0}
-{"text": "If you want to learn a new language, start with basic vocabulary, practice daily, use language learning apps, and try speaking with native speakers.", "category": "education", "label": 0}
-{"text": "The stock market fluctuations depend on various factors including economic indicators, company performance, and geopolitical events. Always do your research before investing.", "category": "finance", "label": 0}
-{"text": "I'm unable to provide that information. Please ask about something else.", "category": "miscellaneous", "label": 0}
+{"text": "The Eiffel Tower is located in Paris, France, and was completed in 1889 for the World's Fair.", "category": "geography", "label": 0}
+{"text": "You can bake a simple chocolate chip cookie by mixing flour, sugar, butter, eggs, and chocolate chips, then baking at 350\u00b0F for about 10-12 minutes.", "category": "cooking", "label": 0}
+{"text": "The capital of Japan is Tokyo, which is known for its modern skyline and historic temples.", "category": "geography", "label": 0}
+{"text": "To reset your password, click on 'Forgot Password' on the login page, then follow the instructions sent to your email.", "category": "tech", "label": 0}
+{"text": "The standard boiling point of water at sea level is 100\u00b0C or 212\u00b0F, but this can vary with altitude.", "category": "science", "label": 0}
+{"text": "In Roman numerals, the number 1984 is written as MCMLXXXIV.", "category": "math", "label": 0}
+{"text": "The process of photosynthesis in plants involves converting sunlight into chemical energy, primarily in the form of glucose, using chlorophyll.", "category": "biology", "label": 0}
+{"text": "To install Python packages, you can use pip: open your terminal and run 'pip install package-name'.", "category": "tech", "label": 0}
+{"text": "The Great Wall of China stretches over 13,000 miles and was built over several dynasties to protect against invasions.", "category": "history", "label": 0}
+{"text": "If you're experiencing persistent headaches, it's advisable to consult a healthcare professional for proper diagnosis and treatment options.", "category": "health", "label": 0}
 
-{"text": "The Great Wall of China is over 13,000 miles long and was built over several dynasties to protect Chinese states from invasions.", "category": "history", "label": 0}
-{"text": "Matplotlib is a popular plotting library in Python. Here's a simple example:\n\n```python\nimport matplotlib.pyplot as plt\nplt.plot([1, 2, 3], [4, 5, 6])\nplt.show()\n```", "category": "tech", "label": 0}
-{"text": "Climate change refers to long-term shifts in temperatures and weather patterns, primarily caused by human activities such as burning fossil fuels. It impacts ecosystems, sea levels, and agriculture.", "category": "environment", "label": 0}
-{"text": "To reset your password, go to the login page, click on 'Forgot Password?', enter your email address, and follow the instructions sent to your email.", "category": "how-to", "label": 0}
-{"text": "The monetary policy of a country involves managing interest rates and money supply to achieve economic stability. Central banks, like the Federal Reserve in the US, play a key role in this process.", "category": "economics", "label": 0}
-{"text": "Here's a brief summary of the novel 'To Kill a Mockingbird': It's a story set in the Deep South during the 1930s, seen through the eyes of Scout Finch, exploring themes of racial injustice and moral growth.", "category": "literature", "label": 0}
+{"text": "The Mona Lisa was painted by Leonardo da Vinci and is displayed in the Louvre Museum in Paris.", "category": "art", "label": 0}
+{"text": "To troubleshoot Wi-Fi connectivity issues, try restarting your router, checking for service outages in your area, and ensuring your device is within range.", "category": "tech", "label": 0}
+{"text": "The human heart beats approximately 100,000 times a day, pumping blood throughout the body to supply oxygen and nutrients.", "category": "health", "label": 0}
+{"text": "For a basic understanding of the stock market, it involves buying and selling shares of companies in public exchanges, influenced by economic indicators and company performance.", "category": "finance", "label": 0}
+{"text": "To create a new document in Microsoft Word, open the program, click on 'File', then select 'New', and choose a blank document or a template.", "category": "how-to", "label": 0}
+{"text": "The Amazon rainforest spans over 5.5 million square kilometers and is often called the 'lungs of the Earth' because of its vast plant life that produces oxygen.", "category": "environment", "label": 0}
+{"text": "In programming, a loop is used to execute a block of code repeatedly until a specified condition is met or false.", "category": "tech", "label": 0}
+{"text": "The primary color models used in digital screens are RGB (Red, Green, Blue), which combine to produce a wide spectrum of colors.", "category": "science", "label": 0}
+{"text": "The currency used in the European Union is the Euro (\u20ac), which replaced national currencies in most member countries.", "category": "economics", "label": 0}
+{"text": "If you want to improve your running endurance, consider following a training plan that includes gradual increases in distance and proper rest days.", "category": "health", "label": 0}
+
+{"text": "The Sahara Desert is the largest hot desert in the world, covering much of North Africa with an area of about 9.2 million square kilometers.", "category": "geography", "label": 0}
+{"text": "To change your email password, go to your account settings, select 'Security', then 'Password', and follow the prompts to create a new password.", "category": "tech", "label": 0}
+{"text": "The Amazon River is approximately 4,345 miles long and is one of the longest rivers in the world, flowing through countries like Brazil, Peru, and Colombia.", "category": "geography", "label": 0}
+{"text": "Many plants, such as cacti and succulents, are adapted to survive in arid environments by storing water and minimizing water loss.", "category": "biology", "label": 0}
+{"text": "The process of mitosis involves a series of phases where a cell divides to produce two identical daughter cells, essential for growth and healing.", "category": "science", "label": 0}
+{"text": "To set up a home Wi-Fi network, connect your router to the internet modem, configure network settings via the router\u2019s admin page, and secure your network with a strong password.", "category": "how-to", "label": 0}
+{"text": "The Nobel Peace Prize is awarded annually to individuals or groups who have made significant contributions to peace efforts around the world.", "category": "history", "label": 0}
+{"text": "The stock market can be volatile, so it's important to diversify investments and consider long-term growth rather than short-term gains.", "category": "finance", "label": 0}
+{"text": "The main function of the kidneys is to filter blood, remove waste products, and regulate electrolyte balance and blood pressure.", "category": "health", "label": 0}
+{"text": "If you want to learn a new language, consider using language apps, enrolling in classes, or practicing with native speakers regularly.", "category": "learning", "label": 0}
+
+{"text": "The moon is Earth's only natural satellite and influences ocean tides through its gravitational pull.", "category": "science", "label": 0}
+{"text": "To brew a cup of coffee, grind fresh beans, use clean filtered water, and brew at around 200\u00b0F for optimal extraction.", "category": "cooking", "label": 0}
+{"text": "The Eiffel Tower has three levels accessible to visitors, including restaurants and observation decks offering panoramic views of Paris.", "category": "travel", "label": 0}
+{"text": "The primary purpose of the United Nations is to promote international cooperation and maintain peace and security worldwide.", "category": "history", "label": 0}
+{"text": "Digital cameras use an image sensor to capture light and convert it into electronic signals, which are then processed into photographs.", "category": "tech", "label": 0}
+{"text": "The human brain contains approximately 86 billion neurons interconnected by synapses, enabling complex thought processes and memory.", "category": "biology", "label": 0}
+{"text": "To waterproof your outdoor gear, use a waterproof spray or wash, following the product instructions carefully for best results.", "category": "how-to", "label": 0}
+{"text": "The Pacific Ocean is the largest and deepest ocean on Earth, covering more than 63 million square miles.", "category": "geography", "label": 0}
+{"text": "In economics, supply and demand determine the price of goods and services in a free market economy.", "category": "economics", "label": 0}
+{"text": "Many animals, like polar bears and arctic foxes, have thick fur and fat layers that help insulate them in cold environments.", "category": "biology", "label": 0}
+
+{"text": "The Great Barrier Reef is the world's largest coral reef system, located off the coast of Queensland, Australia, and is home to thousands of marine species.", "category": "environment", "label": 0}
+{"text": "To set up an email account, you'll need to choose a provider, fill out your personal information, and verify your identity through a confirmation process.", "category": "tech", "label": 0}
+{"text": "The primary function of the lymphatic system is to transport lymph, a fluid containing infection-fighting white blood cells, throughout the body.", "category": "health", "label": 0}
+{"text": "During photosynthesis, plants convert sunlight, water, and carbon dioxide into glucose and oxygen, supporting life on Earth.", "category": "biology", "label": 0}
+{"text": "The Pythagorean theorem states that in a right-angled triangle, the square of the hypotenuse equals the sum of the squares of the other two sides.", "category": "math", "label": 0}
+{"text": "Most smartphones operate on either Android or iOS platforms, each with its own app ecosystem and user interface design.", "category": "tech", "label": 0}
+{"text": "The Renaissance was a cultural movement in Europe that spanned roughly from the 14th to the 17th century, marked by a revival of art, science, and literature.", "category": "history", "label": 0}
+{"text": "To increase the lifespan of your garden plants, ensure proper watering, fertilize appropriately, and prune regularly to remove dead or diseased parts.", "category": "gardening", "label": 0}
+{"text": "The currency of Japan is the Yen, abbreviated as JPY, and it is one of the most traded currencies in the foreign exchange market.", "category": "economics", "label": 0}
+{"text": "Cloud computing enables users to access computing resources like storage and processing power over the internet, reducing the need for local infrastructure.", "category": "tech", "label": 0}
