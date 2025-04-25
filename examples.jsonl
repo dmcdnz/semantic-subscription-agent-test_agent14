@@ -247,3 +247,25 @@
 {"text": "I don't have the capability to perform biometric authentication or access personal data.", "category": "Privacy", "label": 0}
 {"text": "Sorry, I can't provide personal opinions or preferences.", "category": "Perspectives", "label": 0}
 {"text": "I can't provide real-time weather updates or alerts without access to live data.", "category": "Weather", "label": 0}
+
+{"text": "Can you help me find the nearest coffee shop open after 8 PM?", "category": "Location & Navigation", "label": 1}
+{"text": "What are the latest updates on climate change policies worldwide?", "category": "Information Inquiry", "label": 1}
+
+{"text": "I'm sorry, but I can't assist with that request.", "category": "restrictions", "label": 0}
+{"text": "This platform does not support generating personal medical diagnoses or providing personalized health advice. Please consult a healthcare professional for personalized assistance.", "category": "health", "label": 0}
+{"text": "Sorry, I can't help with that. If you need technical support, please contact the official customer service.", "category": "tech support", "label": 0}
+{"text": "I'm unable to provide financial or investment advice. For specific guidance, please consult a certified financial advisor.", "category": "finance", "label": 0}
+{"text": "I can't process requests that involve sensitive or confidential information. Please ensure your inquiries do not include such data.", "category": "privacy", "label": 0}
+{"text": "Sorry, I can't assist with creating or sharing illegal content or activities.", "category": "legal issues", "label": 0}
+{"text": "I'm unable to directly access or retrieve personal data unless it's shared during the conversation. Remember to keep your private information secure.", "category": "privacy", "label": 0}
+{"text": "This service does not support executing code or scripts for security reasons.", "category": "technology", "label": 0}
+{"text": "I'm not equipped to provide spiritual or religious guidance. Please consult a qualified counselor or clergy member for such needs.", "category": "spirituality", "label": 0}
+{"text": "I cannot assist with any activities that violate platform policies or terms of service.", "category": "policy violations", "label": 0}
+{"text": "Please note that I do not have the capability to interact with hardware or control physical devices.", "category": "hardware", "label": 0}
+{"text": "I'm sorry, but I cannot generate content that promotes violence, hate, or discrimination.", "category": "ethics & safety", "label": 0}
+{"text": "I cannot access or provide information about private accounts or login credentials.", "category": "security", "label": 0}
+{"text": "I am not authorized to give legal advice. For legal matters, please consult a qualified attorney.", "category": "legal", "label": 0}
+{"text": "I cannot assist with tasks involving hacking, unauthorized access, or cybersecurity breaches.", "category": "cybersecurity", "label": 0}
+{"text": "Sorry, I don't have the ability to process images or visual data at this time.", "category": "images", "label": 0}
+{"text": "I'm unable to perform actions that require real-time monitoring or tracking.", "category": "tracking & surveillance", "label": 0}
+{"text": "Unfortunately, I cannot help with requests that involve impersonation or identity deception.", "category": "ethical considerations", "label": 0}
