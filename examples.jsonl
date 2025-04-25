@@ -115,3 +115,123 @@
 {"text": "To change a flat tire, follow these steps:\n1. Find a safe location to stop your car. \n2. Turn on your hazard lights.\n3. Remove the hubcap or wheel cover.\n4. Loosen the lug nuts slightly.\n5. Place the jack under the vehicle and lift the car.\n6. Remove the lug nuts entirely and take off the flat tire.\n7. Mount the spare tire.\n8. Tighten the lug nuts.\n9. Lower the car and remove the jack.\n10. Tighten the lug nuts fully.", "category": "how-to", "label": 0}
 {"text": "J.K. Rowling's 'Harry Potter' series has been translated into over 80 languages and has sold more than 500 million copies worldwide, making it one of the best-selling book series in history.", "category": "literature", "label": 0}
 {"text": "A calorie is a unit of energy that measures the amount of energy food provides to the body. It is used to quantify energy intake and expenditure in dietary contexts.", "category": "science", "label": 0}
+
+{"text": "What's the weather forecast for New York City tomorrow?", "category": "Weather", "label": 1}
+{"text": "Can you help me understand quantum entanglement?", "category": "Science", "label": 1}
+{"text": "What's the best way to improve my time management skills?", "category": "Self-Improvement", "label": 1}
+{"text": "Could you recommend some good books on World War II history?", "category": "Books & Literature", "label": 1}
+{"text": "I'm planning a trip to Japan next summer. Can you suggest some must-see places and cultural experiences?", "category": "Travel & Leisure", "label": 1}
+
+{"text": "The boiling point of water is 100\u00b0C (212\u00b0F) at standard atmospheric pressure.", "category": "science", "label": 0}
+{"text": "To resolve a 502 Bad Gateway error, you can try these steps: 1) Refresh the page, 2) Clear your browser cache, 3) Check if the server is down, 4) Disable your network proxy, 5) Restart your devices. If the problem persists, contact your hosting provider.", "category": "tech", "label": 0}
+{"text": "The Mona Lisa, painted by Leonardo da Vinci, is considered one of the most famous and valuable pieces of art in the world. It is renowned for its exquisite detail and enigmatic expression. The painting is housed in the Louvre Museum in Paris.", "category": "art", "label": 0}
+{"text": "Symptoms of seasonal allergies often include sneezing, itchy eyes, and a runny nose. Treatment options can involve antihistamines, nasal decongestants, or allergy shots. It's advisable to consult with a healthcare provider to determine the best course of action.", "category": "health", "label": 0}
+{"text": "```python\ndef factorial(n):\n    if n == 0:\n        return 1\n    else:\n        return n * factorial(n-1)\n\nprint(factorial(5))  # Output: 120\n```", "category": "programming", "label": 0}
+
+{"text": "What's the weather forecast for New York City this weekend?", "category": "Weather", "label": 1}
+{"text": "How does photosynthesis work?", "category": "Science", "label": 1}
+{"text": "Can you give me a summary of the book 'To Kill a Mockingbird'?", "category": "Literature", "label": 1}
+{"text": "What are the current COVID-19 travel restrictions for entering Japan?", "category": "Travel", "label": 1}
+{"text": "Could you help me understand how to create a budget plan that accounts for both monthly expenses and long-term savings?", "category": "Finance", "label": 1}
+
+{"text": "The capital of Japan is Tokyo, a bustling metropolis known for its skyscrapers, culture, and cuisine.", "category": "geography", "label": 0}
+{"text": "To change a tire, first ensure the vehicle is on a flat surface and the parking brake is engaged. Loosen the lug nuts slightly before jacking up the car. Once the car is lifted, remove the lug nuts completely and replace the old tire with a new one. Tighten the lug nuts in a crisscross pattern to ensure the wheel is balanced.", "category": "how-to", "label": 0}
+{"text": "Vitamin D is essential for maintaining healthy bones and teeth. It also supports the immune system, brain, and nervous system. Sources include sunlight, fish, and fortified foods. A deficiency can lead to bone abnormalities such as osteomalacia or osteoporosis.", "category": "health", "label": 0}
+{"text": "def fibonacci(n):\n    if n <= 1:\n        return n\n    else:\n        return(fibonacci(n-1) + fibonacci(n-2))\n\nThis Python function calculates the n-th Fibonacci number using recursion. Note that for large n, this function may become inefficient due to excessive recursion depth.", "category": "tech", "label": 0}
+{"text": "The Renaissance was a cultural movement that spanned roughly the 14th to the 17th century, beginning in Florence, Italy, and later spreading throughout Europe. It marked a period of revival in art, literature, and learning, heavily influenced by the classical antiquity of Greece and Rome. Key figures include Leonardo da Vinci, Michelangelo, and Raphael.", "category": "history", "label": 0}
+
+{"text": "What's the weather forecast for New York City this weekend?", "category": "Weather", "label": 1}
+{"text": "Can you help me understand the difference between renewable and non-renewable energy sources?", "category": "Education", "label": 1}
+{"text": "Find a recipe for a vegan chocolate cake that I can try at home.", "category": "Cooking", "label": 1}
+{"text": "How do I reset my password on my Gmail account if I no longer have access to my recovery email?", "category": "Technical Support", "label": 1}
+{"text": "Could you summarize the key themes and messages of the book 'To Kill a Mockingbird'?", "category": "Literature", "label": 1}
+
+{"text": "The chemical formula for water is H2O.", "category": "science", "label": 0}
+{"text": "To reset your iPhone, go to Settings > General > Reset, then select 'Erase All Content and Settings'. This will erase everything on the device, so make sure to back up important data first.", "category": "tech", "label": 0}
+{"text": "Meditation can improve mental health by reducing stress, enhancing concentration, and promoting a sense of well-being. A study published in JAMA Internal Medicine suggests that mindfulness meditation programs can lead to small to moderate reductions in multiple negative dimensions of psychological stress.", "category": "health", "label": 0}
+{"text": "Ingredients for spaghetti carbonara:\n- 100g pancetta\n- 50g pecorino cheese\n- 50g parmesan\n- 3 large eggs\n- 350g spaghetti\n- 2 plump garlic cloves, peeled and left whole\n- 50g unsalted butter\n- Sea salt and freshly ground black pepper", "category": "how-to", "label": 0}
+{"text": "In Python, you can read a file line by line using:\n\n```\nwith open('file.txt', 'r') as file:\n    for line in file:\n        print(line)\n```\nThis opens 'file.txt' in read mode and iterates over each line, printing it to the console.", "category": "programming", "label": 0}
+
+{"text": "What's the current exchange rate for USD to EUR?", "category": "Finance", "label": 1}
+{"text": "Can you explain the theory of relativity in simple terms?", "category": "Education", "label": 1}
+{"text": "Who won the last Super Bowl?", "category": "Sports", "label": 1}
+{"text": "What are some effective strategies for reducing anxiety in everyday life?", "category": "Health", "label": 1}
+{"text": "Could you provide a summary of the plot of 'Pride and Prejudice'?", "category": "Literature", "label": 1}
+
+{"text": "The capital of France is Paris.", "category": "geography", "label": 0}
+{"text": "To reset your router: 1) Find the reset button, usually located at the back. 2) Use a pin to press and hold the button for 10 seconds. 3) Release the button and wait for the router to restart.", "category": "how-to", "label": 0}
+{"text": "The mitochondria is often referred to as the powerhouse of the cell because it generates the majority of the cell's supply of adenosine triphosphate (ATP), used as a source of chemical energy.", "category": "science", "label": 0}
+{"text": "Regular exercise, a balanced diet, and adequate sleep are essential for maintaining heart health. Additionally, avoiding smoking and managing stress levels can significantly lower the risk of cardiovascular diseases.", "category": "health", "label": 0}
+{"text": "def greet(name):\n    return f'Hello, {name}!'\n\nprint(greet('Alice'))  # This will output: Hello, Alice!", "category": "tech", "label": 0}
+
+{"text": "What's the weather forecast for New York City this weekend?", "category": "weather", "label": 1}
+{"text": "Can you explain how photosynthesis works?", "category": "science", "label": 1}
+{"text": "Find me a gluten-free recipe for banana bread.", "category": "cooking", "label": 1}
+{"text": "Who won the Best Actor Oscar in 2022?", "category": "entertainment", "label": 1}
+{"text": "I'm planning a trip to Japan next spring. Could you suggest some must-see places and local customs I should be aware of?", "category": "travel", "label": 1}
+
+{"text": "To create a simple 'Hello World' web page, write the following HTML code: \n\n<!DOCTYPE html>\n<html>\n<head>\n<title>Hello World</title>\n</head>\n<body>\n<h1>Hello, World!</h1>\n</body>\n</html>", "category": "tech", "label": 0}
+{"text": "Eating a balanced diet rich in fruits, vegetables, whole grains, and lean proteins can help maintain a healthy weight and reduce the risk of chronic diseases.", "category": "health", "label": 0}
+{"text": "1. Preheat your oven to 375\u00b0F (190\u00b0C).\n2. In a mixing bowl, combine 1 cup of flour, 1/2 cup of sugar, and 1 tsp of baking powder.\n3. Add 1/2 cup of milk, 1/4 cup of melted butter, and 1 egg to the dry ingredients.\n4. Mix until the batter is smooth.\n5. Pour the batter into a greased baking pan.\n6. Bake for 25-30 minutes or until a toothpick inserted into the center comes out clean.\n7. Allow to cool before serving.", "category": "how-to", "label": 0}
+{"text": "The Battle of Hastings, which occurred on October 14, 1066, was a pivotal event in English history where William the Conqueror defeated King Harold II. This victory led to the Norman conquest of England.", "category": "history", "label": 0}
+{"text": "The theory of relativity, proposed by Albert Einstein, fundamentally changed our understanding of space, time, and gravity. It consists of two parts: special relativity, which deals with objects moving at constant speeds, especially those close to the speed of light, and general relativity, which provides a new description of gravity as the curvature of spacetime caused by mass.", "category": "science", "label": 0}
+
+{"text": "What's the weather like in Tokyo today?", "category": "Weather", "label": 1}
+{"text": "Can you help me understand the main themes in Shakespeare's 'Macbeth'?", "category": "Literature", "label": 1}
+{"text": "What are the health benefits of practicing yoga regularly?", "category": "Health & Fitness", "label": 1}
+{"text": "Could you provide a summary of the recent developments in the ongoing US-China trade negotiations?", "category": "Current Events", "label": 1}
+{"text": "How do I reset my password if I forgot it?", "category": "Technical Support", "label": 1}
+
+{"text": "The capital of France is Paris.", "category": "geography", "label": 0}
+{"text": "To reset your router, locate the reset button usually at the back or bottom of the device. Press and hold it for about 10 seconds until the lights begin to blink. This will restore factory settings.", "category": "how-to", "label": 0}
+{"text": "Climate change refers to long-term shifts and alterations in temperature and weather patterns, primarily due to human activities such as burning fossil fuels, deforestation, and industrial processes, which increase greenhouse gases in the atmosphere.", "category": "science", "label": 0}
+{"text": "Pros of electric cars include lower emissions, reduced fuel costs, and quieter operation. Cons may involve higher upfront costs, limited range, and longer refueling times. Consider these factors when deciding if an electric car is right for you.", "category": "automotive", "label": 0}
+{"text": "def fibonacci(n):\n    if n <= 0:\n        return []\n    elif n == 1:\n        return [0]\n    sequence = [0, 1]\n    while len(sequence) < n:\n        sequence.append(sequence[-1] + sequence[-2])\n    return sequence", "category": "tech", "label": 0}
+
+{"text": "What's the weather forecast for New York City this weekend?", "category": "weather", "label": 1}
+{"text": "Can you summarize the main themes of 'Pride and Prejudice' by Jane Austen?", "category": "literature", "label": 1}
+{"text": "How do I reset my iPhone to factory settings?", "category": "technology", "label": 1}
+{"text": "What are the health benefits of drinking green tea regularly?", "category": "health", "label": 1}
+{"text": "Could you explain the significance of the Treaty of Versailles in shaping modern Europe?", "category": "history", "label": 1}
+
+{"text": "To clean a coffee grinder, you can use uncooked rice. Add a handful of rice to the grinder, run it until it's pulverized, then discard the rice and wipe the grinder with a damp cloth.", "category": "how-to", "label": 0}
+{"text": "Photosynthesis is the process by which green plants and some other organisms use sunlight to synthesize foods with the help of chlorophyll, primarily producing glucose and oxygen from carbon dioxide and water.", "category": "science", "label": 0}
+{"text": "You can reset your smartphone by holding the power and volume down buttons simultaneously for about 10 seconds until the device restarts.", "category": "tech", "label": 0}
+{"text": "High blood pressure, or hypertension, often has no symptoms but can lead to serious health issues, such as heart disease and stroke. Regular monitoring and lifestyle changes, like diet and exercise, are vital for management.", "category": "health", "label": 0}
+{"text": "import math\n\ndef calculate_area_of_circle(radius):\n    return math.pi * radius ** 2\n\nprint(calculate_area_of_circle(5))  # Example usage", "category": "tech", "label": 0}
+
+{"text": "What's the weather like today in New York City?", "category": "Weather", "label": 1}
+{"text": "Can you explain the theory of relativity to me in simple terms?", "category": "Science", "label": 1}
+{"text": "What are some effective strategies for managing stress at work?", "category": "Wellness", "label": 1}
+{"text": "Which are the best practices for optimizing a website's SEO?", "category": "Technology", "label": 1}
+{"text": "Please provide a detailed comparison of electric cars available in the market, considering factors like range, price, and charging time.", "category": "Automotive", "label": 1}
+
+{"text": "The Amazon rainforest covers approximately 5.5 million square kilometers and is home to an estimated 390 billion individual trees divided into 16,000 species.", "category": "environment", "label": 0}
+{"text": "To reset your iPhone, go to Settings > General > Transfer or Reset iPhone > Reset. Choose 'Reset All Settings' to keep your data intact, or 'Erase All Content and Settings' for a full reset.", "category": "how-to", "label": 0}
+{"text": "Hypertension, or high blood pressure, can often be managed with a combination of lifestyle changes and medication. Lifestyle changes may include adopting a heart-healthy diet, reducing salt intake, maintaining a healthy weight, engaging in regular physical activity, limiting alcohol consumption, and quitting smoking. Medications such as diuretics, ACE inhibitors, or beta-blockers may be prescribed by a healthcare provider based on individual needs and health status.", "category": "health", "label": 0}
+{"text": "def bubble_sort(arr):\n    n = len(arr)\n    for i in range(n):\n        for j in range(0, n-i-1):\n            if arr[j] > arr[j+1]:\n                arr[j], arr[j+1] = arr[j+1], arr[j]\n    return arr", "category": "tech", "label": 0}
+{"text": "The French Revolution, which began in 1789, was a period of radical social and political change in France that had a lasting impact on French history and influenced revolutions around the world. Key events included the fall of the Bastille, the establishment of the National Assembly, the execution of King Louis XVI, and the rise of Napoleon Bonaparte. The Revolution led to the end of monarchy in France, the rise of secularism, and the spread of republican ideals.", "category": "history", "label": 0}
+
+{"text": "What's the weather forecast for New York City tomorrow?", "category": "Weather", "label": 1}
+{"text": "Can you explain the theory of relativity in simple terms?", "category": "Science", "label": 1}
+{"text": "What's the difference between a Roth IRA and a traditional IRA?", "category": "Finance", "label": 1}
+{"text": "What are some good strategies for improving mental health during stressful times?", "category": "Health", "label": 1}
+{"text": "Could you help me plan a two-week itinerary for a trip to Japan, including must-see attractions and off-the-beaten-path experiences?", "category": "Travel", "label": 1}
+
+{"text": "The capital of France is Paris.", "category": "geography", "label": 0}
+{"text": "To convert Celsius to Fahrenheit, multiply the Celsius temperature by 9/5 and then add 32. For example, 25\u00b0C is equivalent to 77\u00b0F.", "category": "how-to", "label": 0}
+{"text": "Artificial Intelligence (AI) refers to the simulation of human intelligence in machines programmed to think and learn. This can encompass a variety of applications, including speech recognition, problem-solving, and even playing complex games like chess. AI is broadly categorized into narrow AI, which is designed for specific tasks, and general AI, which has the potential to perform any intellectual task that a human can do.", "category": "tech", "label": 0}
+{"text": "Some potential side effects of taking ibuprofen include stomach pain, heartburn, nausea, and dizziness. It's important to follow dosage instructions and consult with a healthcare provider if any severe side effects occur.", "category": "health", "label": 0}
+{"text": "Here's a simple JavaScript function to reverse a string:\n```\nfunction reverseString(str) {\n  return str.split('').reverse().join('');\n}\nconsole.log(reverseString('hello')); // Output: 'olleh'\n```", "category": "programming", "label": 0}
+
+{"text": "What's the weather like today in New York City?", "category": "Weather", "label": 1}
+{"text": "Can you summarize the main themes of the book 'Pride and Prejudice'?", "category": "Literature Summary", "label": 1}
+{"text": "How do I set up a wireless printer on my home network?", "category": "Technology Assistance", "label": 1}
+{"text": "What's the process for applying for a tourist visa to Japan from the US?", "category": "Travel Information", "label": 1}
+{"text": "Can you explain the theory of relativity in simple terms?", "category": "Science Explanation", "label": 1}
+
+{"text": "The Eiffel Tower in Paris, France, stands at 324 meters tall, making it one of the most iconic structures in the world.", "category": "travel", "label": 0}
+{"text": "To reset your router: 1) Unplug the power cable from the router. 2) Wait for about 10 seconds. 3) Plug the power cable back in. 4) Allow the router a few minutes to fully reboot.", "category": "tech", "label": 0}
+{"text": "Regular exercise, a balanced diet, and adequate sleep are fundamental components of a healthy lifestyle. Incorporating physical activity into your daily routine can improve cardiovascular health, increase energy levels, and boost mental health. A diet rich in fruits, vegetables, whole grains, and lean proteins supports overall wellness, while sufficient sleep aids in recovery and cognitive function.", "category": "health", "label": 0}
+{"text": "Here's a simple Python code snippet to calculate the factorial of a number:\n```python\ndef factorial(n):\n    if n == 0:\n        return 1\n    else:\n        return n * factorial(n-1)\n\nprint(factorial(5))  # Output: 120\n```\nThis recursive function multiplies the number by the factorial of the number minus one until it reaches zero.", "category": "programming", "label": 0}
+{"text": "The economic principle of supply and demand describes the relationship between the availability of a product and the desire for that product. As demand increases and supply remains constant, prices generally rise. Conversely, if supply increases and demand remains the same, prices often drop. This principle helps to explain market behaviors and pricing strategies.", "category": "economics", "label": 0}
