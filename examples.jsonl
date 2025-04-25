@@ -91,3 +91,27 @@
 {"text": "To reset your router, locate the reset button on the back. Press and hold it for about 10 seconds until the lights blink. This will restore factory settings.", "category": "tech", "label": 0}
 {"text": "In 1865, the Thirteenth Amendment to the United States Constitution was ratified, abolishing slavery. This was a pivotal moment in American history, as it marked the end of legal slavery in the United States. The amendment was passed by Congress on January 31, 1865, and ratified by the required number of states by December 6, 1865. This legal change was a direct outcome of the Civil War and was part of the broader Reconstruction efforts aimed at rebuilding the nation and integrating formerly enslaved people into society.", "category": "history", "label": 0}
 {"text": "To prepare a classic spaghetti carbonara, follow these steps:\n\n1. Boil a pot of salted water and cook 400g of spaghetti until al dente.\n2. While the pasta cooks, beat 4 eggs in a bowl and mix them with 100g of grated Parmesan cheese.\n3. In a pan, cook 150g of pancetta or guanciale until crispy.\n4. Drain the spaghetti and reserve some cooking water.\n5. Remove the pan from heat, add the spaghetti and a little pasta water to the pancetta, then stir in the egg-cheese mixture.\n6. Toss quickly to coat the pasta, adding more pasta water if necessary to achieve a creamy texture.\n7. Serve with black pepper and extra Parmesan cheese.", "category": "cooking", "label": 0}
+
+{"text": "What's the weather like in New York City today?", "category": "Weather", "label": 1}
+{"text": "How does the process of photosynthesis work in plants?", "category": "Science", "label": 1}
+{"text": "Can you recommend some good movies to watch on a rainy day?", "category": "Entertainment", "label": 1}
+{"text": "What are the main differences between renewable and non-renewable energy sources?", "category": "Education", "label": 1}
+{"text": "Could you provide me with a step-by-step guide on how to set up a new email account?", "category": "Technology", "label": 1}
+
+{"text": "The capital of Australia is Canberra.", "category": "geography", "label": 0}
+{"text": "If you want to reduce your carbon footprint, consider using public transportation instead of driving, switching to energy-efficient appliances, and reducing meat consumption. These steps can significantly lower your environmental impact.", "category": "environment", "label": 0}
+{"text": "1. Preheat your oven to 350\u00b0F (175\u00b0C).\n2. Mix 2 cups of all-purpose flour, 1 cup of sugar, 1 teaspoon of baking powder, and a pinch of salt in a large bowl.\n3. In another bowl, whisk together 1 cup of milk, 2 eggs, and 1/2 cup of melted butter.\n4. Combine the wet and dry ingredients until smooth.\n5. Pour the batter into a greased 9x13 inch baking pan.\n6. Bake for 30-35 minutes or until a toothpick comes out clean.\n7. Let it cool before serving.", "category": "how-to", "label": 0}
+{"text": "The Pythagorean theorem states that in a right triangle, the square of the length of the hypotenuse is equal to the sum of the squares of the lengths of the other two sides. This can be expressed with the formula: a\u00b2 + b\u00b2 = c\u00b2.", "category": "math", "label": 0}
+{"text": "In 2023, the global electric vehicle (EV) market is projected to grow significantly due to increasing environmental regulations and consumer demand for sustainable transport options. Major automobile manufacturers are expanding their EV lineups, and governments are investing in charging infrastructure to support this transition.", "category": "business", "label": 0}
+
+{"text": "What's the weather like in Paris today?", "category": "weather", "label": 1}
+{"text": "How do I reset my password?", "category": "technical support", "label": 1}
+{"text": "Can you explain the significance of the Battle of Hastings in 1066?", "category": "history", "label": 1}
+{"text": "What's a good recipe for vegetarian lasagna?", "category": "cooking", "label": 1}
+{"text": "Could you give me some advice on how to improve my public speaking skills?", "category": "self-improvement", "label": 1}
+
+{"text": "In Python, you can reverse a string using slicing: `reversed_string = original_string[::-1]`.", "category": "tech", "label": 0}
+{"text": "The symptoms of the common cold typically include a runny nose, sore throat, cough, congestion, and sneezing. They usually appear one to three days after exposure to a cold-causing virus and can last for up to two weeks.", "category": "health", "label": 0}
+{"text": "To change a flat tire, follow these steps:\n1. Find a safe location to stop your car. \n2. Turn on your hazard lights.\n3. Remove the hubcap or wheel cover.\n4. Loosen the lug nuts slightly.\n5. Place the jack under the vehicle and lift the car.\n6. Remove the lug nuts entirely and take off the flat tire.\n7. Mount the spare tire.\n8. Tighten the lug nuts.\n9. Lower the car and remove the jack.\n10. Tighten the lug nuts fully.", "category": "how-to", "label": 0}
+{"text": "J.K. Rowling's 'Harry Potter' series has been translated into over 80 languages and has sold more than 500 million copies worldwide, making it one of the best-selling book series in history.", "category": "literature", "label": 0}
+{"text": "A calorie is a unit of energy that measures the amount of energy food provides to the body. It is used to quantify energy intake and expenditure in dietary contexts.", "category": "science", "label": 0}
