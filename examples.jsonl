@@ -9,3 +9,145 @@
 {"text": "I recommend consulting a licensed medical professional for any health concerns. It's important not to rely solely on online information for diagnosis or treatment decisions.", "category": "Health Advice", "label": 0}
 {"text": "Programming requires a good understanding of algorithms, syntax, and problem-solving skills. If you're interested, I can suggest beginner tutorials or resources to get started with Python or Java, but I cannot write full programs for you.", "category": "Educational / Tech", "label": 0}
 {"text": "Sorry, I can't process that request. Please provide a question or topic you'd like information about.", "category": "General Response", "label": 0}
+
+{"text": "What\u2019s the weather like today in London?", "category": "weather", "label": 1}
+{"text": "Can you tell me the capital of Japan?", "category": "geography", "label": 1}
+{"text": "How do I reset my email password?", "category": "tech support", "label": 1}
+{"text": "Who wrote the novel 'Pride and Prejudice'?", "category": "literature", "label": 1}
+{"text": "Explain Einstein's theory of relativity in simple terms.", "category": "science", "label": 1}
+{"text": "What are some healthy dinner ideas for vegetarians?", "category": "cooking", "label": 1}
+{"text": "Schedule a meeting with the marketing team next Wednesday at 3PM.", "category": "productivity", "label": 1}
+{"text": "Can you recommend some good science fiction movies?", "category": "entertainment", "label": 1}
+{"text": "Convert 15 miles to kilometers.", "category": "math", "label": 1}
+{"text": "What is the latest news on climate change?", "category": "news", "label": 1}
+{"text": "Set an alarm for 7:00 AM tomorrow morning.", "category": "reminders", "label": 1}
+{"text": "What are the symptoms of a common cold?", "category": "health", "label": 1}
+{"text": "Find me a Italian restaurant nearby that has good reviews.", "category": "food services", "label": 1}
+{"text": "How can I improve my public speaking skills?", "category": "lifestyle", "label": 1}
+{"text": "What is the current exchange rate between USD and EUR?", "category": "finance", "label": 1}
+{"text": "Tell me a fun fact about space.", "category": "education", "label": 1}
+{"text": "Open the calendar app and create an event for my dentist appointment on Friday.", "category": "applications", "label": 1}
+{"text": "What is the process for applying for a student visa in Canada?", "category": "travel", "label": 1}
+{"text": "Do I need a visa to visit Thailand from the UK?", "category": "travel", "label": 1}
+{"text": "Tell me a joke.", "category": "entertainment", "label": 1}
+{"text": "Help me compile a shopping list for the weekend picnic.", "category": "lifestyle", "label": 1}
+{"text": "What are some tips for learning a new language online?", "category": "education", "label": 1}
+{"text": "Describe the symptoms of seasonal allergies.", "category": "health", "label": 1}
+{"text": "What movies are playing at the local theater this weekend?", "category": "entertainment", "label": 1}
+{"text": "Generate a random password with at least 12 characters, including symbols.", "category": "tech support", "label": 1}
+{"text": "Help me find a gift for a 10-year-old boy who likes science kits.", "category": "shopping", "label": 1}
+{"text": "Summarize the main points of the latest iPhone announcement.", "category": "technology", "label": 1}
+{"text": "What does it mean if my dog is vomiting repeatedly?", "category": "health", "label": 1}
+{"text": "Give me directions from Central Park to the Empire State Building.", "category": "navigation", "label": 1}
+{"text": "How do I start a vegetable garden in my backyard?", "category": "gardening", "label": 1}
+{"text": "Translate 'Good morning, how are you?' into Spanish.", "category": "language", "label": 1}
+{"text": "What are some effective meditation techniques for stress relief?", "category": "wellness", "label": 1}
+{"text": "Tell me the nutritional information of a medium banana.", "category": "nutrition", "label": 1}
+{"text": "What is the history behind the Eiffel Tower?", "category": "history", "label": 1}
+{"text": "Is it going to rain this weekend in Chicago?", "category": "weather", "label": 1}
+{"text": "Find me a hotel in Paris with at least 4 stars, under $200 a night.", "category": "travel", "label": 1}
+{"text": "What are some popular programming languages in 2024?", "category": "technology", "label": 1}
+{"text": "How does photosynthesis work in plants?", "category": "science", "label": 1}
+{"text": "Tell me how I can reduce my carbon footprint.", "category": "environment", "label": 1}
+{"text": "What's the best way to learn to play the guitar?", "category": "hobbies", "label": 1}
+{"text": "Help me find a recipe for gluten-free brownies.", "category": "cooking", "label": 1}
+{"text": "How to improve my credit score?", "category": "finance", "label": 1}
+{"text": "What are some festivals happening in India this year?", "category": "events", "label": 1}
+{"text": "Tell me a brief summary of the novel '1984'.", "category": "literature", "label": 1}
+{"text": "What is the process to apply for a mortgage loan?", "category": "finance", "label": 1}
+{"text": "When is the next full moon?", "category": "astronomy", "label": 1}
+{"text": "What skincare products are recommended for sensitive skin?", "category": "beauty", "label": 1}
+{"text": "Help me plan a weekend trip to the mountains.", "category": "travel", "label": 1}
+{"text": "What is the significance of the year 1066 in history?", "category": "history", "label": 1}
+{"text": "Find the latest research articles on renewable energy.", "category": "research", "label": 1}
+{"text": "How do I start a small business online?", "category": "business", "label": 1}
+{"text": "What are some effective exercises for lower back pain?", "category": "health", "label": 1}
+{"text": "Can you recommend some good podcasts about technology?", "category": "entertainment", "label": 1}
+{"text": "Tell me about the cultural traditions of Japan.", "category": "culture", "label": 1}
+{"text": "What is the best way to learn about investing in stocks?", "category": "finance", "label": 1}
+{"text": "Plan an itinerary for a 5-day trip to Rome.", "category": "travel", "label": 1}
+{"text": "Help me locate a nearby pharmacy open late at night.", "category": "health", "label": 1}
+{"text": "What are the benefits of drinking green tea?", "category": "nutrition", "label": 1}
+{"text": "Describe the process of photosynthesis step-by-step.", "category": "science", "label": 1}
+{"text": "How do I fix a leaky faucet?", "category": "home repairs", "label": 1}
+{"text": "What are the best strategies for learning math as an adult?", "category": "education", "label": 1}
+{"text": "Find a running route in my neighborhood that is 5 kilometers long.", "category": "fitness", "label": 1}
+{"text": "What is the current gold price per ounce?", "category": "finance", "label": 1}
+{"text": "Can you compose a short poem about springtime?", "category": "entertainment", "label": 1}
+{"text": "What steps should I take to prepare my house for winter?", "category": "home maintenance", "label": 1}
+{"text": "Tell me the main differences between Python and Java.", "category": "technology", "label": 1}
+{"text": "Help me find a good book for children age 8 to 10.", "category": "education", "label": 1}
+{"text": "What are some common signs of dehydration?", "category": "health", "label": 1}
+{"text": "What is the fastest way to learn to cook gourmet meals?", "category": "cooking", "label": 1}
+{"text": "What are the latest fashion trends this season?", "category": "fashion", "label": 1}
+{"text": "Can you tell me about the health benefits of jogging daily?", "category": "health", "label": 1}
+{"text": "Find an indoor activity to do on a rainy day for a family of four.", "category": "activities", "label": 1}
+{"text": "What are the most visited tourist attractions in New York City?", "category": "travel", "label": 1}
+{"text": "Explain how to set up a home Wi-Fi network securely.", "category": "tech support", "label": 1}
+{"text": "What are some effective ways to save energy at home?", "category": "environment", "label": 1}
+{"text": "Describe the main causes of the French Revolution.", "category": "history", "label": 1}
+{"text": "Help me find a local volunteer opportunity in my area.", "category": "community", "label": 1}
+{"text": "What are some good strategies for managing stress before exams?", "category": "education", "label": 1}
+{"text": "Suggest a low-carb breakfast recipe.", "category": "cooking", "label": 1}
+{"text": "What is the best way to learn about climate change impact?", "category": "environment", "label": 1}
+{"text": "Can you tell me the latest updates on the Mars rover missions?", "category": "science", "label": 1}
+{"text": "How do I create a budget plan for my personal finances?", "category": "finance", "label": 1}
+{"text": "What are some techniques to improve my photography skills?", "category": "hobbies", "label": 1}
+{"text": "Find me a playlist with relaxing music for studying.", "category": "entertainment", "label": 1}
+{"text": "What are common symptoms of diabetes?", "category": "health", "label": 1}
+{"text": "How can I reduce plastic waste in my daily life?", "category": "environment", "label": 1}
+{"text": "Where is the closest emergency room near me?", "category": "health", "label": 1}
+{"text": "Help me choose a new laptop suitable for graphic design.", "category": "technology", "label": 1}
+{"text": "What are some fun science experiments I can do at home?", "category": "education", "label": 1}
+
+{"text": "I'm sorry, I can't assist with that request.", "category": "misc", "label": 0}
+{"text": "This isn't something I can help with.", "category": "misc", "label": 0}
+{"text": "Please consult a qualified professional for this matter.", "category": "advice", "label": 0}
+{"text": "I'm unable to process that request.", "category": "error", "label": 0}
+{"text": "I'm sorry, I don't have information on that topic.", "category": "info", "label": 0}
+{"text": "That request falls outside my capabilities.", "category": "limit", "label": 0}
+{"text": "Sorry, I cannot provide guidance on that subject.", "category": "guidance", "label": 0}
+{"text": "I'm not authorized to perform that action.", "category": "security", "label": 0}
+{"text": "I'm programmed to avoid sharing that type of information.", "category": "privacy", "label": 0}
+{"text": "I'm unable to assist with that request at this time.", "category": "availability", "label": 0}
+{"text": "Sorry, I can't help with that request because it involves sensitive data.", "category": "privacy", "label": 0}
+{"text": "Regrettably, I don't have the capacity to respond to that.", "category": "misc", "label": 0}
+{"text": "I'm here to answer questions related to general topics; I can't handle specific personal requests.", "category": "personal", "label": 0}
+{"text": "I'm not equipped to provide legal or medical advice.", "category": "advice", "label": 0}
+{"text": "That task isn't something I can perform.", "category": "actions", "label": 0}
+{"text": "I'm sorry, I don't process requests related to online transactions.", "category": "commerce", "label": 0}
+{"text": "I'm designed to provide factual information and general knowledge, not to perform tasks or actions.", "category": "functionality", "label": 0}
+{"text": "That request is beyond my scope as an assistant.", "category": "scope", "label": 0}
+{"text": "Sorry, I can't provide that kind of entertainment.", "category": "entertainment", "label": 0}
+{"text": "I'm unable to browse the internet for real-time data.", "category": "tech", "label": 0}
+{"text": "This falls outside the Bereich of my programming.", "category": "language", "label": 0}
+{"text": "Sorry, I can't generate images or visual content.", "category": "visuals", "label": 0}
+{"text": "I'm unable to authenticate identity or access personal accounts.", "category": "privacy", "label": 0}
+{"text": "I can't help with that request because it involves illegal activity.", "category": "law", "label": 0}
+{"text": "This request cannot be fulfilled due to ethical guidelines.", "category": "ethics", "label": 0}
+{"text": "I do not have the ability to perform physical tasks or actions.", "category": "actions", "label": 0}
+{"text": "Sorry, I can't offer financial investment advice.", "category": "finance", "label": 0}
+{"text": "I'm not able to give personal opinions or subjective judgments.", "category": "opinions", "label": 0}
+{"text": "Sorry, I can't make appointments or reservations for you.", "category": "appointments", "label": 0}
+{"text": "That request involves manipulating personal data, which I cannot do.", "category": "privacy", "label": 0}
+{"text": "I cannot access or modify files on your device.", "category": "device", "label": 0}
+{"text": "Sorry, I can't assist with hacking or bypassing security systems.", "category": "security", "label": 0}
+{"text": "I'm programmed not to participate in activities that are unethical or harmful.", "category": "ethics", "label": 0}
+{"text": "Sorry, I can't provide real-time location data of individuals.", "category": "privacy", "label": 0}
+{"text": "I don't have the capability to send emails or text messages on your behalf.", "category": "communications", "label": 0}
+{"text": "That command isn't supported by my system.", "category": "system", "label": 0}
+{"text": "Sorry, I can't perform calculations involving personal identifiers.", "category": "math", "label": 0}
+{"text": "I can't provide information about specific individuals or personal data.", "category": "privacy", "label": 0}
+{"text": "I'm unable to help with requests that involve violating terms of service.", "category": "policy", "label": 0}
+{"text": "That request is not something I am capable of doing.", "category": "capability", "label": 0}
+{"text": "Sorry, I can't help with requests related to hacking, phishing, or scams.", "category": "security", "label": 0}
+{"text": "I don't provide advice on illegal or dangerous activities.", "category": "ethics", "label": 0}
+{"text": "I'm not authorized to access or display sensitive information.", "category": "privacy", "label": 0}
+{"text": "Sorry, I can't perform any task that requires physical intervention.", "category": "actions", "label": 0}
+{"text": "I cannot make moral or ethical decisions for you.", "category": "ethics", "label": 0}
+{"text": "I'm unable to provide personal medical diagnoses or treatment plans.", "category": "health", "label": 0}
+{"text": "Sorry, I can't provide data or insights on confidential government information.", "category": "security", "label": 0}
+{"text": "I cannot interfere with or access private accounts or passwords.", "category": "privacy", "label": 0}
+{"text": "That request involves breaching privacy or security policies.", "category": "security", "label": 0}
+{"text": "Sorry, I'm not allowed to help with activities that break laws or regulations.", "category": "law", "label": 0}
+{"text": "I can't generate content that promotes violence or hate speech.", "category": "ethics", "label": 0}
