@@ -6,12 +6,12 @@
   "val_examples": 941,
   "positive_examples": 2236,
   "negative_examples": 2467,
-  "best_val_metric": 0.8617363344051447,
+  "best_val_metric": 0.6427771556550952,
   "optimized_metric": "F1",
-  "created_at": "2025-04-26T07:05:30.521080",
+  "created_at": "2025-04-26T07:12:31.175056",
   "training_params": {
     "batch_size": 16,
-    "epochs": 5,
+    "epochs": 1,
     "learning_rate": 2e-05,
     "validation_split": 0.2,
     "classification_threshold": 0.5,
@@ -26,6 +26,7 @@
     "early_stopping_patience": null
   },
   "evaluation_results": {
-    "confusion_matrix_path": "fine_tuned_model/confusion_matrix.png"
+    "confusion_matrix_path": "fine_tuned_model/confusion_matrix.png",
+    "confusion_matrix_url": "/static/visualizations/semantic_subscription_agent_test_agent14_20250426_071231_confusion_matrix.png"
   }
 }
