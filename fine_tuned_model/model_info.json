@@ -6,9 +6,9 @@
   "val_examples": 941,
   "positive_examples": 2236,
   "negative_examples": 2467,
-  "best_val_metric": 0.8614393125671321,
+  "best_val_metric": 0.8617363344051447,
   "optimized_metric": "F1",
-  "created_at": "2025-04-26T06:35:38.413766",
+  "created_at": "2025-04-26T07:05:30.521080",
   "training_params": {
     "batch_size": 16,
     "epochs": 5,
@@ -24,5 +24,8 @@
     "mixed_precision_fp16": true,
     "early_stopping_enabled": false,
     "early_stopping_patience": null
+  },
+  "evaluation_results": {
+    "confusion_matrix_path": "fine_tuned_model/confusion_matrix.png"
   }
 }
