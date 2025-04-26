@@ -8,7 +8,7 @@
   "negative_examples": 2467,
   "best_val_metric": 0.6427771556550952,
   "optimized_metric": "F1",
-  "created_at": "2025-04-26T07:12:31.175056",
+  "created_at": "2025-04-26T07:23:57.123320",
   "training_params": {
     "batch_size": 16,
     "epochs": 1,
@@ -27,6 +27,6 @@
   },
   "evaluation_results": {
     "confusion_matrix_path": "fine_tuned_model/confusion_matrix.png",
-    "confusion_matrix_url": "/static/visualizations/semantic_subscription_agent_test_agent14_20250426_071231_confusion_matrix.png"
+    "confusion_matrix_url": "/static/visualizations/semantic_subscription_agent_test_agent14_20250426_072357_confusion_matrix.png"
   }
 }
