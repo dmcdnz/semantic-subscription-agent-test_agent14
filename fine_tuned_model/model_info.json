@@ -2,10 +2,10 @@
   "agent_type": "semantic_subscription_agent_test_agent14",
   "base_model": "all-MiniLM-L6-v2",
   "embedding_dim": 384,
-  "train_examples": 2015,
-  "val_examples": 504,
-  "positive_examples": 1483,
-  "negative_examples": 1036,
-  "best_val_f1": 0.9183359013867488,
-  "created_at": "2025-04-25T04:31:30.088972"
+  "train_examples": 3762,
+  "val_examples": 941,
+  "positive_examples": 2236,
+  "negative_examples": 2467,
+  "best_val_f1": 0.8614393125671321,
+  "created_at": "2025-04-26T04:07:51.423730"
 }
