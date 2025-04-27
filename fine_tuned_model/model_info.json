@@ -6,19 +6,19 @@
   "val_examples": 941,
   "positive_examples": 2236,
   "negative_examples": 2467,
-  "best_val_metric": 0.7638418079096045,
-  "optimized_metric": "F1",
-  "created_at": "2025-04-27T00:47:48.674791",
+  "best_val_metric": 0.8799149840595112,
+  "optimized_metric": "Accuracy",
+  "created_at": "2025-04-27T00:52:54.781038",
   "training_params": {
-    "batch_size": 64,
-    "epochs": 10,
-    "learning_rate": 3e-05,
+    "batch_size": 32,
+    "epochs": 7,
+    "learning_rate": 4e-05,
     "validation_split": 0.2,
     "classification_threshold": 0.5000000000000001,
     "optimize_threshold": true,
-    "metric_to_optimize": "F1",
-    "max_sequence_length": 128,
-    "warmup_steps": 2,
+    "metric_to_optimize": "Accuracy",
+    "max_sequence_length": 256,
+    "warmup_steps": 0,
     "weight_decay": 0.01,
     "dropout_rate": 0.1,
     "mixed_precision_fp16": true,
@@ -27,6 +27,6 @@
   },
   "evaluation_results": {
     "confusion_matrix_path": "fine_tuned_model/confusion_matrix.png",
-    "confusion_matrix_url": "/static/visualizations/semantic_subscription_agent_test_agent14_20250427_004748_confusion_matrix.png"
+    "confusion_matrix_url": "/static/visualizations/semantic_subscription_agent_test_agent14_20250427_005254_confusion_matrix.png"
   }
 }
