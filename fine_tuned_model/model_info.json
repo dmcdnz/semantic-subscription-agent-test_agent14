@@ -1,24 +1,24 @@
 {
   "agent_type": "semantic_subscription_agent_test_agent14",
-  "base_model": "all-distilroberta-v1",
-  "embedding_dim": 768,
+  "base_model": "all-MiniLM-L6-v2",
+  "embedding_dim": 384,
   "train_examples": 3762,
   "val_examples": 941,
   "positive_examples": 2236,
   "negative_examples": 2467,
-  "best_val_metric": 0.91324200913242,
+  "best_val_metric": 0.7638418079096045,
   "optimized_metric": "F1",
-  "created_at": "2025-04-27T00:30:15.356074",
+  "created_at": "2025-04-27T00:47:48.674791",
   "training_params": {
-    "batch_size": 32,
-    "epochs": 7,
+    "batch_size": 64,
+    "epochs": 10,
     "learning_rate": 3e-05,
     "validation_split": 0.2,
     "classification_threshold": 0.5000000000000001,
     "optimize_threshold": true,
     "metric_to_optimize": "F1",
-    "max_sequence_length": 256,
-    "warmup_steps": 0,
+    "max_sequence_length": 128,
+    "warmup_steps": 2,
     "weight_decay": 0.01,
     "dropout_rate": 0.1,
     "mixed_precision_fp16": true,
@@ -27,6 +27,6 @@
   },
   "evaluation_results": {
     "confusion_matrix_path": "fine_tuned_model/confusion_matrix.png",
-    "confusion_matrix_url": "/static/visualizations/semantic_subscription_agent_test_agent14_20250427_003015_confusion_matrix.png"
+    "confusion_matrix_url": "/static/visualizations/semantic_subscription_agent_test_agent14_20250427_004748_confusion_matrix.png"
   }
 }
