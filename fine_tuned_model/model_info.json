@@ -1,22 +1,22 @@
 {
   "agent_type": "semantic_subscription_agent_test_agent14",
-  "base_model": "all-MiniLM-L6-v2",
-  "embedding_dim": 384,
+  "base_model": "answerdotai/ModernBERT-base",
+  "embedding_dim": 768,
   "train_examples": 3762,
   "val_examples": 941,
   "positive_examples": 2236,
   "negative_examples": 2467,
-  "best_val_metric": 0.8724760892667375,
-  "optimized_metric": "Accuracy",
-  "created_at": "2025-04-27T01:27:37.128669",
+  "best_val_metric": 0.978865406006674,
+  "optimized_metric": "F1",
+  "created_at": "2025-04-27T01:53:01.945238",
   "training_params": {
     "batch_size": 32,
     "epochs": 7,
     "learning_rate": 3e-05,
     "validation_split": 0.2,
-    "classification_threshold": 0.5000000000000001,
+    "classification_threshold": 0.5500000000000002,
     "optimize_threshold": true,
-    "metric_to_optimize": "Accuracy",
+    "metric_to_optimize": "F1",
     "max_sequence_length": 128,
     "warmup_steps": 0,
     "weight_decay": 0.01,
@@ -27,6 +27,6 @@
   },
   "evaluation_results": {
     "confusion_matrix_path": "fine_tuned_model/confusion_matrix.png",
-    "confusion_matrix_url": "/static/visualizations/semantic_subscription_agent_test_agent14_20250427_012737_confusion_matrix.png"
+    "confusion_matrix_url": "/static/visualizations/semantic_subscription_agent_test_agent14_20250427_015301_confusion_matrix.png"
   }
 }
