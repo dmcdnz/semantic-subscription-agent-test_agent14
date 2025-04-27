@@ -1,23 +1,23 @@
 {
   "agent_type": "semantic_subscription_agent_test_agent14",
-  "base_model": "all-MiniLM-L6-v2",
-  "embedding_dim": 384,
+  "base_model": "all-mpnet-base-v2",
+  "embedding_dim": 768,
   "train_examples": 3762,
   "val_examples": 941,
   "positive_examples": 2236,
   "negative_examples": 2467,
-  "best_val_metric": 0.8799149840595112,
+  "best_val_metric": 0.4814027630180659,
   "optimized_metric": "Accuracy",
-  "created_at": "2025-04-27T00:52:54.781038",
+  "created_at": "2025-04-27T01:12:22.520367",
   "training_params": {
     "batch_size": 32,
-    "epochs": 7,
-    "learning_rate": 4e-05,
+    "epochs": 10,
+    "learning_rate": 3e-05,
     "validation_split": 0.2,
-    "classification_threshold": 0.5000000000000001,
-    "optimize_threshold": true,
+    "classification_threshold": 0.3,
+    "optimize_threshold": false,
     "metric_to_optimize": "Accuracy",
-    "max_sequence_length": 256,
+    "max_sequence_length": 128,
     "warmup_steps": 0,
     "weight_decay": 0.01,
     "dropout_rate": 0.1,
@@ -27,6 +27,6 @@
   },
   "evaluation_results": {
     "confusion_matrix_path": "fine_tuned_model/confusion_matrix.png",
-    "confusion_matrix_url": "/static/visualizations/semantic_subscription_agent_test_agent14_20250427_005254_confusion_matrix.png"
+    "confusion_matrix_url": "/static/visualizations/semantic_subscription_agent_test_agent14_20250427_011222_confusion_matrix.png"
   }
 }
