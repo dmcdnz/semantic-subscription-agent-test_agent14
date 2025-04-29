@@ -75,10 +75,26 @@ except ImportError:
                     logging.info(f"Calculating interest for message {message_id}")
                     logging.info(f"Message content: {content[:100]}...")
                     
-                    # Use the interest model properly if it exists
+                    # Method 1: Try using direct SentenceTransformer and classification head if available
+                    if hasattr(self, 'embedding_model') and hasattr(self, 'classification_head'):
+                        try:
+                            import torch
+                            # Get embedding using SentenceTransformer
+                            embedding = self.embedding_model.encode([content], convert_to_tensor=True)
+                            # Classify using classification head
+                            with torch.no_grad():
+                                output = self.classification_head(embedding)
+                                score = torch.sigmoid(output).item()
+                            logging.info(f"Direct classification score: {score}")
+                            return score
+                        except Exception as e:
+                            logging.error(f"Error using direct classification: {e}")
+                            # Continue to next method
+                    
+                    # Method 2: Use the interest model if it exists
                     if hasattr(self, 'interest_model') and self.interest_model:
                         try:
-                            # This is the key method to call for the interest model
+                            # Use the interest model's built-in calculation method
                             interest_score = self.interest_model.calculate_similarity(content)
                             logging.info(f"Interest model score: {interest_score}")
                             return interest_score
@@ -86,12 +102,12 @@ except ImportError:
                             logging.error(f"Error using interest model: {e}")
                             # Continue to fallback implementation
                     
-                    # Fallback implementation
-                    # Simple implementation: keyword matching for domain relevance
-                    keywords = [
-                        # Add domain-specific keywords here
-                        "question", "answer", "why", "how", "what", "when", "who"
-                    ]
+                    # Fallback implementation - keyword matching
+                    # Use either the predefined keywords or a default set
+                    keywords = getattr(self, 'keywords', [
+                        "question", "answer", "why", "how", "what", "when", "who", "where",
+                        "explain", "tell", "describe", "help", "information"
+                    ])
                     
                     # Count keyword matches
                     matches = sum(1 for keyword in keywords if keyword.lower() in content.lower())
@@ -102,7 +118,7 @@ except ImportError:
                         interest_score = min(0.5 + (matches * 0.1), 1.0)  # Scale with matches, cap at 1.0
                     else:
                         # No keywords match, still provide minimal interest
-                        interest_score = 0.6  # Default minimal interest
+                        interest_score = 0.65  # Default interest level for Q&A agent
                     
                     logging.info(f"Fallback interest calculation: {interest_score} (based on {matches} keyword matches)")
                     return interest_score
@@ -174,61 +190,135 @@ class Test_agent14(BaseAgent):
         # 1. An embedding model (for SentenceTransformer)
         # 2. An interest model (numpy saved file)
         
-        model_dir = os.path.join(os.path.dirname(__file__), "fine_tuned_model")
-        embedding_model_path = model_dir  # The embedding model would be in the directory itself
-        interest_model_path = os.path.join(model_dir, "interest_model.npz")  # The interest vectors
+        # Try multiple possible model directories (for different environments)
+        model_dirs = [
+            os.path.join(os.path.dirname(__file__), "fine_tuned_model"),  # Standard path
+            "/app/fine_tuned_model",  # Docker container path
+            os.path.join(os.getcwd(), "fine_tuned_model")  # Current working directory
+        ]
         
+        # Find the first valid model directory
+        model_dir = None
+        for directory in model_dirs:
+            if os.path.exists(directory) and os.path.isdir(directory):
+                model_dir = directory
+                break
+        
+        if not model_dir:
+            logger.warning("Could not find fine_tuned_model directory in any of the expected locations")
+            super().setup_interest_model()
+            return
+            
         logger.info(f"Looking for fine-tuned models in: {model_dir}")
         
+        # Model paths
+        embedding_model_path = model_dir  # The embedding model would be in the directory itself
+        interest_model_path = os.path.join(model_dir, "interest_model.npz")  # The interest vectors
+        classification_head_path = os.path.join(model_dir, "classification_head.pt")  # The classification head
+        
         # List the model directory for debugging
-        if os.path.exists(model_dir) and os.path.isdir(model_dir):
-            files = os.listdir(model_dir)
-            logger.info(f"Fine-tuned model directory contains: {files}")
+        files = os.listdir(model_dir)
+        logger.info(f"Fine-tuned model directory contains: {files}")
+        
+        # Configure the fallback keywords for interest calculation
+        self.keywords = [
+            "question", "answer", "why", "how", "what", "when", "who", "where",
+            "explain", "tell", "describe", "help", "information"
+        ]
+        
+        # First try to use a direct approach with SentenceTransformers
+        model_loaded = False
+        
+        try:
+            # Try to import SentenceTransformers directly (should be installed in container)
+            import torch
+            from sentence_transformers import SentenceTransformer
             
+            # Check for config.json which indicates a valid model directory
+            if os.path.exists(os.path.join(model_dir, "config.json")):
+                try:
+                    # Load the model directly
+                    logger.info("Attempting to load SentenceTransformer model directly")
+                    self.embedding_model = SentenceTransformer(model_dir)
+                    
+                    # Try to load classification head if it exists
+                    if os.path.exists(classification_head_path):
+                        try:
+                            logger.info(f"Loading classification head from {classification_head_path}")
+                            self.classification_head = torch.load(classification_head_path, map_location=torch.device('cpu'))
+                            self.classification_head.eval()  # Set to evaluation mode
+                            model_loaded = True
+                            logger.info("Successfully loaded SentenceTransformer model and classification head")
+                        except Exception as e:
+                            logger.error(f"Error loading classification head: {e}")
+                    else:
+                        # No classification head, but we can still use the embedding model
+                        model_loaded = True
+                        logger.info("Successfully loaded SentenceTransformer model (no classification head)")
+                except Exception as e:
+                    logger.error(f"Error loading SentenceTransformer model directly: {e}")
+        except ImportError:
+            logger.warning("SentenceTransformer not available, will try alternative methods")
+            
+        # If the direct approach failed, try the standard methods
+        if not model_loaded:
             try:
-                # Import necessary components for fine-tuned model
+                # Try standard import patterns
                 try:
                     # First try importing from semsubscription
                     from semsubscription.vector_db.embedding import EmbeddingEngine, InterestModel
+                    logger.info("Successfully imported from semsubscription modules")
                 except ImportError:
-                    # Fall back to local implementation for containerized environments
-                    from .interest_model import CustomInterestModel as InterestModel
-                    from .embedding_engine import EmbeddingEngine
+                    # Try absolute imports for containerized environments
+                    try:
+                        from interest_model import CustomInterestModel as InterestModel
+                        from embedding_engine import EmbeddingEngine
+                        logger.info("Successfully imported using absolute imports")
+                    except ImportError:
+                        # Last resort - try relative imports if we're in a package
+                        try:
+                            import sys
+                            sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
+                            from agent_base import InterestModel, EmbeddingEngine
+                            logger.info("Successfully imported by adding parent directory to path")
+                        except Exception as e:
+                            logger.error(f"All import methods failed: {e}")
+                            # Fall back to standard setup
+                            super().setup_interest_model()
+                            return
                 
-                # Create the interest model first
+                # Create the interest model based on available files
                 if os.path.exists(interest_model_path):
                     logger.info(f"Found pre-calculated interest model: {interest_model_path}")
                     # Create a default embedding engine and then load the saved interest vectors
                     embedding_engine = EmbeddingEngine()  # Using default model
                     self.interest_model = InterestModel(embedding_engine=embedding_engine, model_path=interest_model_path)
                     logger.info(f"Successfully loaded pre-calculated interest model")
+                    model_loaded = True
                 # If we have a custom embedding model, load it
                 elif os.path.exists(os.path.join(embedding_model_path, "config.json")):
                     logger.info(f"Found custom sentence transformer model at: {embedding_model_path}")
                     embedding_engine = EmbeddingEngine(model_name=embedding_model_path)
                     logger.info(f"Successfully loaded custom embedding model")
                     self.interest_model = InterestModel(embedding_engine=embedding_engine)
-                else:
-                    logger.warning(f"No valid fine-tuned model found in {model_dir}")
-                    # Fall back to standard setup
-                    super().setup_interest_model()
-                    return
-                    
-                # Set threshold for the model
-                self.interest_model.threshold = self.similarity_threshold
-                
-                # Domain-specific keywords can be added here
-                # self.interest_model.keywords.extend([
-                #     "specific_keyword",
-                #     "another_keyword"
-                # ])
-                
-                return  # Exit early, we've set up the model successfully
+                    model_loaded = True
             except Exception as e:
-                logger.error(f"Error setting up fine-tuned model: {e}")
-                logger.warning("Falling back to default interest model setup")
+                logger.error(f"Error in standard model loading approach: {e}")
         
-        # Fall back to standard setup if fine-tuned model doesn't exist or fails
+        # Final fallback if nothing worked        
+        if not model_loaded:
+            logger.warning(f"No valid fine-tuned model could be loaded from {model_dir}")
+            # Fall back to standard setup
+            super().setup_interest_model()
+            return
+                    
+        # Set threshold for the model if we have one
+        if hasattr(self, 'interest_model') and self.interest_model:
+            self.interest_model.threshold = self.similarity_threshold
+            
+            # Add our keywords to the model
+            if hasattr(self.interest_model, 'keywords'):
+                self.interest_model.keywords.extend(self.keywords)
         super().setup_interest_model()
         
         # Add domain-specific customizations to the default model
