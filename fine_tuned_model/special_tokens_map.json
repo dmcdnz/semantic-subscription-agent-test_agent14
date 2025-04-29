@@ -8,7 +8,7 @@
   },
   "mask_token": {
     "content": "[MASK]",
-    "lstrip": false,
+    "lstrip": true,
     "normalized": false,
     "rstrip": false,
     "single_word": false
